@@ -1,7 +1,6 @@
 'use client';
 
 import Hero from '@/components/Hero';
-import About from '@/components/About';
 import EventOverview from '@/components/EventOverview';
 import DJNight from '@/components/DJNight';
 import GlobalRegistration from '@/components/GlobalRegistration';
@@ -30,11 +29,6 @@ export default function Home() {
 
       {/* Hero Section */}
       <Hero />
-
-      {/* About Section */}
-      <div id="about">
-        <About />
-      </div>
 
       {/* Event Overview Section */}
       <div id="events">

@@ -27,9 +27,9 @@ export default function Navbar() {
           </motion.div>
 
           {/* Center - College Logo and Credits (Desktop) */}
-          <div className="hidden md:flex items-center gap-6 lg:gap-8">
+          <div className="hidden md:flex items-center gap-8 lg:gap-10">
             {/* College Logo */}
-            <div className="w-16 h-16 lg:w-20 lg:h-20 xl:w-24 xl:h-24">
+            <div className="w-20 h-20 lg:w-24 lg:h-24 xl:w-28 xl:h-28">
               <Image
                 src="/images/college-logo.png"
                 alt="College Logo"
@@ -41,7 +41,7 @@ export default function Navbar() {
             </div>
 
             {/* College Credits */}
-            <div className="relative w-64 lg:w-80 xl:w-96 h-12 lg:h-14 xl:h-16">
+            <div className="relative w-80 lg:w-96 xl:w-[28rem] h-14 lg:h-16 xl:h-20">
               <Image
                 src="/images/college-credits.png"
                 alt="College Credits"

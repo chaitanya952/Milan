@@ -1,63 +1,53 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { google } from 'googleapis';
+import { updatePaymentStatus, PaymentData } from '@/lib/googleSheets';
+
+// Force this route to run in Node.js runtime (not Edge)
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { registrationId, upiTransactionId, paymentScreenshot } = body;
-
-    // Initialize Google Sheets
-    const auth = new google.auth.GoogleAuth({
-      credentials: {
-        client_email: process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
-        private_key: process.env.GOOGLE_SHEETS_PRIVATE_KEY?.replace(/\\n/g, '\n'),
-      },
-      scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-    });
-
-    const sheets = google.sheets({ version: 'v4', auth });
-    const spreadsheetId = process.env.GOOGLE_SHEETS_SPREADSHEET_ID;
-
-    // Search for the registration ID across all sheets
-    const sheetNames = ['Ignitron', 'Kritansh', 'Chrysalis'];
-    
-    for (const sheetName of sheetNames) {
-      const response = await sheets.spreadsheets.values.get({
-        spreadsheetId,
-        range: `${sheetName}!A:P`,
-      });
-
-      const rows = response.data.values || [];
-      const rowIndex = rows.findIndex(row => row[1] === registrationId);
-
-      if (rowIndex !== -1) {
-        // Update payment status, transaction ID, and screenshot URL
-        await sheets.spreadsheets.values.update({
-          spreadsheetId,
-          range: `${sheetName}!N${rowIndex + 1}:P${rowIndex + 1}`,
-          valueInputOption: 'RAW',
-          requestBody: {
-            values: [['paid', upiTransactionId, paymentScreenshot]],
-          },
-        });
-
-        return NextResponse.json({
-          success: true,
-          message: 'Payment confirmed successfully',
-        });
-      }
+    // Verify environment variables are available
+    if (!process.env.GOOGLE_SHEETS_SPREADSHEET_ID) {
+      console.error('Environment variable GOOGLE_SHEETS_SPREADSHEET_ID is not set');
+      return NextResponse.json({
+        success: false,
+        error: 'Server configuration error: GOOGLE_SHEETS_SPREADSHEET_ID not configured'
+      }, { status: 500 });
     }
 
-    return NextResponse.json({
-      success: false,
-      error: 'Registration not found',
-    }, { status: 404 });
+    const body = await request.json();
 
+    // Validate required fields
+    if (!body.registrationId || !body.upiTransactionId) {
+      return NextResponse.json({
+        success: false,
+        error: 'Missing required fields: registrationId and upiTransactionId are required'
+      }, { status: 400 });
+    }
+
+    const paymentData: PaymentData = {
+      timestamp: new Date().toISOString(),
+      registrationId: body.registrationId,
+      upiTransactionId: body.upiTransactionId,
+      paymentStatus: 'Completed',
+    };
+
+    const result = await updatePaymentStatus(paymentData);
+
+    if (result.success) {
+      return NextResponse.json({
+        success: true,
+        message: 'Payment confirmed successfully',
+      });
+    } else {
+      throw new Error(result.error || 'Failed to confirm payment');
+    }
   } catch (error) {
     console.error('Payment confirmation error:', error);
     return NextResponse.json({
       success: false,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message : 'Unknown error occurred',
     }, { status: 500 });
   }
 }

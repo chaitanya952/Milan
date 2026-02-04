@@ -4,8 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState, FormEvent } from 'react';
 import Image from 'next/image';
 
+// Import SubEvent type from eventsData to ensure consistency
 import { SubEvent } from '@/lib/eventsData';
-
 
 interface RegistrationFormProps {
   subEvent?: SubEvent;
@@ -29,6 +29,7 @@ export default function RegistrationForm({
   const [step, setStep] = useState<RegistrationStep>('form');
   const [registrationId, setRegistrationId] = useState('');
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string>('');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -44,8 +45,11 @@ export default function RegistrationForm({
 
   const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const isGroupEvent = subEvent?.teamSize === 'group';
-  const entryFee = isGroupEvent
+  const isGroupEvent = subEvent?.teamSize === 'group' || subEvent?.teamSize === 'solo/duo/group';
+  const isSoloEvent = subEvent?.teamSize === 'solo';
+  const isFlexibleEvent = subEvent?.teamSize === 'solo/duo/group';
+  
+  const entryFee = isGroupEvent || isFlexibleEvent
     ? subEvent?.entryFee?.group || 0
     : subEvent?.entryFee?.single || 0;
 
@@ -71,7 +75,7 @@ export default function RegistrationForm({
       if (!formData.selectedSubEvent) newErrors.selectedSubEvent = 'Please select a sub-event';
     }
 
-    if (isGroupEvent && !formData.teamName.trim()) {
+    if (isGroupEvent && !isFlexibleEvent && !formData.teamName.trim()) {
       newErrors.teamName = 'Team name is required';
     }
 
@@ -85,15 +89,11 @@ export default function RegistrationForm({
     if (!validateForm()) return;
 
     setLoading(true);
+    setError('');
 
     try {
-      // Generate registration ID
-      const regId = `REG-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
-      
-      // Save to Google Sheets
+      // Prepare registration data
       const registrationData = {
-        timestamp: new Date().toISOString(),
-        registrationId: regId,
         eventName: eventName || formData.selectedEvent,
         subEventName: subEvent?.name || formData.selectedSubEvent,
         name: formData.name,
@@ -101,35 +101,40 @@ export default function RegistrationForm({
         phone: formData.phone,
         college: formData.college,
         year: formData.year,
-        teamName: formData.teamName || 'N/A',
-        teamMembers: formData.teamMembers || 'N/A',
-        teamSize: isGroupEvent ? 'Group' : 'Solo',
+        teamName: formData.teamName || undefined,
+        teamMembers: formData.teamMembers ? formData.teamMembers.split(',').map(m => m.trim()) : undefined,
+        teamSize: isFlexibleEvent 
+          ? formData.teamMembers ? 'Group' : 'Solo'
+          : isGroupEvent 
+          ? 'Group' 
+          : 'Solo',
         entryFee: entryFee,
-        status: 'Pending Payment',
       };
 
-      // Call Google Sheets API
-      // Replace YOUR_DEPLOYMENT_ID with your actual Google Apps Script deployment ID
-      await fetch(
-        'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec',
-        {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(registrationData),
-        }
-      );
+      // Call Next.js API route
+      const response = await fetch('/api/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(registrationData),
+      });
 
-      setRegistrationId(regId);
-      setStep(entryFee > 0 ? 'payment' : 'success');
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Registration failed');
+      }
+
+      if (data.success) {
+        setRegistrationId(data.registrationId);
+        setStep(entryFee > 0 ? 'payment' : 'success');
+      } else {
+        throw new Error(data.error || 'Registration failed');
+      }
     } catch (error) {
       console.error('Registration error:', error);
-      // Still generate ID and continue for demo purposes
-      const id = `REG-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
-      setRegistrationId(id);
-      setStep(entryFee > 0 ? 'payment' : 'success');
+      setError(error instanceof Error ? error.message : 'Registration failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -144,33 +149,35 @@ export default function RegistrationForm({
     }
 
     setLoading(true);
+    setError('');
 
     try {
-      // Update payment status in Google Sheets
-      const paymentData = {
-        action: 'updatePayment',
-        registrationId,
-        upiTransactionId: formData.upiTransactionId,
-        paymentStatus: 'Completed',
-        timestamp: new Date().toISOString(),
-      };
+      // Update payment status via Next.js API
+      const response = await fetch('/api/confirm-payment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          registrationId,
+          upiTransactionId: formData.upiTransactionId,
+        }),
+      });
 
-      await fetch(
-        'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec',
-        {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(paymentData),
-        }
-      );
+      const data = await response.json();
 
-      setStep('success');
+      if (!response.ok) {
+        throw new Error(data.error || 'Payment confirmation failed');
+      }
+
+      if (data.success) {
+        setStep('success');
+      } else {
+        throw new Error(data.error || 'Payment confirmation failed');
+      }
     } catch (error) {
       console.error('Payment confirmation error:', error);
-      setStep('success'); // Continue for demo
+      setError(error instanceof Error ? error.message : 'Payment confirmation failed. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -201,124 +208,60 @@ export default function RegistrationForm({
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 w-10 h-10 rounded-full glass flex items-center justify-center hover:bg-white/20 transition-all border-2 border-white/10"
+          className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center glass rounded-full border-2 border-white/10 hover:border-white/20 transition-all z-10"
         >
           ✕
         </button>
 
         {/* Header */}
-        <div className="mb-6">
-          <h2 className="text-3xl md:text-4xl font-black mb-2">
-            <span className={`text-${eventColor} glow-text`}>
-              {isGlobal ? 'Register for Milan' : subEvent?.name}
+        <div className="text-center mb-8">
+          <motion.div
+            className="w-16 h-16 mx-auto mb-4 glass rounded-full flex items-center justify-center border-2 border-white/20"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+          >
+            <span className="text-3xl">🎯</span>
+          </motion.div>
+          <h2 className="text-3xl font-black mb-2">
+            <span className={`glow-text text-${eventColor}`}>
+              {isGlobal ? 'Global Registration' : eventName || 'Event Registration'}
             </span>
           </h2>
-          <p className="text-gray-400">
-            {isGlobal ? 'Join the ultimate fest experience' : `${eventName} - Registration`}
-          </p>
+          {!isGlobal && subEvent && (
+            <p className="text-gray-400">
+              {subEvent.name} • {subEvent.teamSize === 'solo' ? 'Solo' : subEvent.teamSize === 'group' ? 'Team' : 'Solo/Team'}
+            </p>
+          )}
+          {entryFee > 0 && (
+            <div className="inline-block mt-3 px-4 py-2 glass rounded-full border border-white/20">
+              <span className={`text-lg font-bold text-${eventColor}`}>Entry Fee: ₹{entryFee}</span>
+            </div>
+          )}
         </div>
 
+        {/* Error Display */}
+        {error && (
+          <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mb-4 p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm"
+          >
+            ⚠️ {error}
+          </motion.div>
+        )}
+
+        {/* Multi-step Form */}
         <AnimatePresence mode="wait">
           {/* Step 1: Registration Form */}
           {step === 'form' && (
             <motion.form
               key="form"
+              onSubmit={handleSubmit}
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: 20 }}
-              onSubmit={handleSubmit}
               className="space-y-4"
             >
-              {/* Event Details (if not global) */}
-              {!isGlobal && subEvent && (
-                <div className="glass rounded-xl p-4 mb-6 border border-white/10">
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm text-gray-400">Entry Fee</span>
-                    <span className={`text-2xl font-bold text-${eventColor}`}>₹{entryFee}</span>
-                  </div>
-                  <div className="flex justify-between items-center mb-2">
-                    <span className="text-sm text-gray-400">Team Size</span>
-                    <span className="text-sm font-semibold">
-                      {isGroupEvent
-                        ? `${subEvent.minTeamSize}-${subEvent.maxTeamSize} members`
-                        : 'Individual'}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-sm text-gray-400">Date & Time</span>
-                    <span className="text-sm">{subEvent.date} • {subEvent.time.split(' ')[0]}</span>
-                  </div>
-                </div>
-              )}
-
-              {/* Global Event Selection */}
-              {isGlobal && (
-                <>
-                  <div>
-                    <label className="block text-sm font-semibold mb-2">
-                      Select Event <span className="text-neon-pink">*</span>
-                    </label>
-                    <select
-                      value={formData.selectedEvent}
-                      onChange={(e) => handleInputChange('selectedEvent', e.target.value)}
-                      className={`w-full px-4 py-3 bg-white/5 border-2 ${
-                        errors.selectedEvent ? 'border-neon-pink' : 'border-white/10'
-                      } rounded-xl focus:border-${eventColor} focus:outline-none text-white`}
-                    >
-                      <option value="" className="bg-fest-dark">Choose an event</option>
-                      <option value="ignitron" className="bg-fest-dark">🔥 Ignitron - Technical Excellence</option>
-                      <option value="kritansh" className="bg-fest-dark">🎭 Kritansh - Cultural Brilliance</option>
-                      <option value="chrysalis" className="bg-fest-dark">🎮 Chrysalis - Gaming Mastery</option>
-                    </select>
-                    {errors.selectedEvent && (
-                      <p className="text-neon-pink text-sm mt-1">{errors.selectedEvent}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold mb-2">
-                      Select Sub-Event <span className="text-neon-pink">*</span>
-                    </label>
-                    <select
-                      value={formData.selectedSubEvent}
-                      onChange={(e) => handleInputChange('selectedSubEvent', e.target.value)}
-                      className={`w-full px-4 py-3 bg-white/5 border-2 ${
-                        errors.selectedSubEvent ? 'border-neon-pink' : 'border-white/10'
-                      } rounded-xl focus:border-${eventColor} focus:outline-none text-white`}
-                      disabled={!formData.selectedEvent}
-                    >
-                      <option value="" className="bg-fest-dark">
-                        {formData.selectedEvent ? 'Choose a sub-event' : 'Select an event first'}
-                      </option>
-                      {formData.selectedEvent === 'ignitron' && (
-                        <>
-                          <option value="hackathon" className="bg-fest-dark">Code Sprint - Hackathon</option>
-                          <option value="webdev" className="bg-fest-dark">WebWars - Web Development</option>
-                          <option value="debugging" className="bg-fest-dark">Debug Hunt</option>
-                        </>
-                      )}
-                      {formData.selectedEvent === 'kritansh' && (
-                        <>
-                          <option value="dance" className="bg-fest-dark">Dance Battle</option>
-                          <option value="drama" className="bg-fest-dark">Drama Competition</option>
-                          <option value="music" className="bg-fest-dark">Battle of Bands</option>
-                        </>
-                      )}
-                      {formData.selectedEvent === 'chrysalis' && (
-                        <>
-                          <option value="bgmi" className="bg-fest-dark">BGMI Tournament</option>
-                          <option value="valorant" className="bg-fest-dark">Valorant Championship</option>
-                          <option value="fifa" className="bg-fest-dark">FIFA Cup</option>
-                        </>
-                      )}
-                    </select>
-                    {errors.selectedSubEvent && (
-                      <p className="text-neon-pink text-sm mt-1">{errors.selectedSubEvent}</p>
-                    )}
-                  </div>
-                </>
-              )}
-
               {/* Personal Details */}
               <div>
                 <label className="block text-sm font-semibold mb-2">
@@ -347,7 +290,7 @@ export default function RegistrationForm({
                     className={`w-full px-4 py-3 bg-white/5 border-2 ${
                       errors.email ? 'border-neon-pink' : 'border-white/10'
                     } rounded-xl focus:border-${eventColor} focus:outline-none text-white placeholder-gray-500`}
-                    placeholder="your@email.com"
+                    placeholder="your.email@example.com"
                   />
                   {errors.email && <p className="text-neon-pink text-sm mt-1">{errors.email}</p>}
                 </div>
@@ -413,7 +356,8 @@ export default function RegistrationForm({
                 <>
                   <div>
                     <label className="block text-sm font-semibold mb-2">
-                      Team Name <span className="text-neon-pink">*</span>
+                      Team Name {!isFlexibleEvent && <span className="text-neon-pink">*</span>}
+                      {isFlexibleEvent && <span className="text-gray-400 text-xs ml-2">(Optional for solo/duo)</span>}
                     </label>
                     <input
                       value={formData.teamName}
@@ -430,13 +374,13 @@ export default function RegistrationForm({
 
                   <div>
                     <label className="block text-sm font-semibold mb-2">
-                      Team Members (comma separated)
+                      Team Members {isFlexibleEvent && <span className="text-gray-400 text-xs ml-2">(Leave empty for solo)</span>}
                     </label>
                     <textarea
                       value={formData.teamMembers}
                       onChange={(e) => handleInputChange('teamMembers', e.target.value)}
                       className="w-full px-4 py-3 bg-white/5 border-2 border-white/10 rounded-xl focus:border-${eventColor} focus:outline-none text-white placeholder-gray-500"
-                      placeholder="Member 1, Member 2, Member 3..."
+                      placeholder={isFlexibleEvent ? "Leave empty for solo, or enter: Member 1, Member 2..." : "Member 1, Member 2, Member 3..."}
                       rows={3}
                     />
                   </div>

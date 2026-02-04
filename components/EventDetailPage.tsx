@@ -16,9 +16,6 @@ export default function EventDetailPage({ eventId, onClose }: EventDetailPagePro
 
   if (!event) return null;
 
-  const formalEvents = event.subEvents.filter(e => e.type === 'formal');
-  const nonFormalEvents = event.subEvents.filter(e => e.type === 'non-formal');
-
   return (
     <>
       <motion.div
@@ -55,7 +52,7 @@ export default function EventDetailPage({ eventId, onClose }: EventDetailPagePro
               </motion.div>
 
               <h1 className="text-6xl sm:text-7xl md:text-8xl font-black mb-4">
-                <span className={`glow-text-3d text-transparent bg-clip-text bg-gradient-to-r ${event.gradient}`}>
+                <span className={`glow-text-3d text-${event.color}`}>
                   {event.title}
                 </span>
               </h1>
@@ -64,97 +61,50 @@ export default function EventDetailPage({ eventId, onClose }: EventDetailPagePro
                 {event.tagline}
               </p>
 
-              <div className="flex items-center justify-center gap-6 mb-6">
-                <div className="glass px-6 py-3 rounded-full">
-                  <span className="text-neon-blue font-bold">📅 {event.eventDate}</span>
+              <div className="flex items-center justify-center gap-6 mb-6 flex-wrap">
+                <div className="glass px-6 py-3 rounded-full border-2 border-white/20">
+                  <span className="text-blue-400 font-bold">📅 {event.eventDate}</span>
                 </div>
-                <div className="glass px-6 py-3 rounded-full">
+                <div className="glass px-6 py-3 rounded-full border-2 border-white/20">
                   <span className={`text-${event.color} font-bold`}>
                     {event.subEvents.length} Events
                   </span>
                 </div>
               </div>
 
-              <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed">
+              <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed mb-8">
                 {event.summary}
               </p>
-
-              {/* Google Form Link */}
-              {event.googleFormUrl && (
-                <motion.a
-                  href={event.googleFormUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`inline-block mt-6 px-8 py-3 bg-gradient-to-r ${event.gradient} rounded-full font-bold text-lg`}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                >
-                  📝 Register via Google Form
-                </motion.a>
-              )}
             </motion.div>
 
-            {/* Formal Events Section */}
-            {formalEvents.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="mb-16"
-              >
-                <div className="flex items-center gap-3 mb-8">
-                  <div className={`h-1 flex-1 bg-gradient-to-r ${event.gradient} rounded-full`} />
-                  <h2 className="text-3xl font-black">
-                    <span className={`text-${event.color}`}>Formal Events</span>
-                  </h2>
-                  <div className={`h-1 flex-1 bg-gradient-to-l ${event.gradient} rounded-full`} />
-                </div>
+            {/* All Events Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="mb-16"
+            >
+              <div className="flex items-center gap-3 mb-8">
+                <div className={`h-1 flex-1 bg-gradient-to-r ${event.gradient} rounded-full`} />
+                <h2 className="text-3xl font-black">
+                  <span className={`text-${event.color}`}>All Events</span>
+                </h2>
+                <div className={`h-1 flex-1 bg-gradient-to-l ${event.gradient} rounded-full`} />
+              </div>
 
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {formalEvents.map((subEvent, index) => (
-                    <EventCard
-                      key={subEvent.id}
-                      subEvent={subEvent}
-                      eventColor={event.color}
-                      eventGradient={event.gradient}
-                      index={index}
-                      onClick={() => setSelectedSubEvent(subEvent)}
-                    />
-                  ))}
-                </div>
-              </motion.div>
-            )}
-
-            {/* Non-Formal Events Section */}
-            {nonFormalEvents.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="mb-16"
-              >
-                <div className="flex items-center gap-3 mb-8">
-                  <div className={`h-1 flex-1 bg-gradient-to-r ${event.gradient} rounded-full`} />
-                  <h2 className="text-3xl font-black">
-                    <span className={`text-${event.color}`}>Non-Formal Events</span>
-                  </h2>
-                  <div className={`h-1 flex-1 bg-gradient-to-l ${event.gradient} rounded-full`} />
-                </div>
-
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {nonFormalEvents.map((subEvent, index) => (
-                    <EventCard
-                      key={subEvent.id}
-                      subEvent={subEvent}
-                      eventColor={event.color}
-                      eventGradient={event.gradient}
-                      index={index}
-                      onClick={() => setSelectedSubEvent(subEvent)}
-                    />
-                  ))}
-                </div>
-              </motion.div>
-            )}
+              <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {event.subEvents.map((subEvent, index) => (
+                  <EventCard
+                    key={subEvent.id}
+                    subEvent={subEvent}
+                    eventColor={event.color}
+                    eventGradient={event.gradient}
+                    index={index}
+                    onClick={() => setSelectedSubEvent(subEvent)}
+                  />
+                ))}
+              </div>
+            </motion.div>
 
             {/* Back Button */}
             <motion.div
@@ -165,7 +115,7 @@ export default function EventDetailPage({ eventId, onClose }: EventDetailPagePro
             >
               <motion.button
                 onClick={onClose}
-                className="px-8 py-4 glass rounded-full font-bold text-lg border-2 border-white/20"
+                className="px-8 py-4 glass rounded-full font-bold text-lg border-2 border-white/20 hover:border-white/40 transition-all"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -206,7 +156,8 @@ function EventCard({
   onClick: () => void;
 }) {
   const isGroupEvent = subEvent.teamSize === 'group';
-  const entryFee = isGroupEvent ? subEvent.entryFee.group : subEvent.entryFee.single;
+  const isSoloDuoGroup = subEvent.teamSize === 'solo/duo/group';
+  const entryFee = isGroupEvent || isSoloDuoGroup ? subEvent.entryFee.group : subEvent.entryFee.single;
 
   return (
     <motion.div
@@ -227,7 +178,7 @@ function EventCard({
             {subEvent.category}
           </span>
           <span className="text-2xl">
-            {isGroupEvent ? '👥' : '👤'}
+            {isGroupEvent ? '👥' : isSoloDuoGroup ? '👤👥' : '👤'}
           </span>
         </div>
 
@@ -245,12 +196,18 @@ function EventCard({
         <div className="space-y-2 mb-4 relative z-10">
           <div className="flex items-center justify-between text-sm">
             <span className="text-gray-500">Entry Fee</span>
-            <span className={`text-lg font-bold text-${eventColor}`}>₹{entryFee}</span>
+            <span className={`text-lg font-bold text-${eventColor}`}>
+              ₹{entryFee}{isSoloDuoGroup && '/head'}
+            </span>
           </div>
           <div className="flex items-center justify-between text-sm">
             <span className="text-gray-500">Team Size</span>
             <span className="font-semibold">
-              {isGroupEvent ? `${subEvent.minTeamSize}-${subEvent.maxTeamSize}` : 'Solo'}
+              {isSoloDuoGroup 
+                ? 'Solo/Duo/Group' 
+                : isGroupEvent 
+                ? `${subEvent.minTeamSize}-${subEvent.maxTeamSize}` 
+                : 'Solo'}
             </span>
           </div>
         </div>
@@ -259,7 +216,7 @@ function EventCard({
         <div className="flex items-center gap-3 text-xs text-gray-400 mb-4 relative z-10">
           <div className="flex items-center gap-1">
             <span>⏰</span>
-            <span>{subEvent.time.split(' ')[0]}</span>
+            <span>{subEvent.time}</span>
           </div>
           <div className="flex items-center gap-1">
             <span>📍</span>

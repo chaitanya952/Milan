@@ -61,7 +61,7 @@ export default function GlobalRegistration() {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <span className="glow-text gradient-text">Ready to Join Milan?</span>
+            <span className="glow-text text-neon-blue">Ready to Join Milan?</span>
           </motion.h2>
 
           {/* Description */}

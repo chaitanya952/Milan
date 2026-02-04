@@ -155,7 +155,7 @@ function EventSection({ event }: { event: MainEvent }) {
               <DynamicIcon name={event.icon} size={64} strokeWidth={2} />
             </div>
             <h2 className="text-5xl sm:text-6xl md:text-7xl font-black">
-              <span className={`gradient-text bg-gradient-to-r ${event.gradient} glow-text`}>
+              <span className={`text-${event.color} glow-text`}>
                 {event.title}
               </span>
             </h2>
