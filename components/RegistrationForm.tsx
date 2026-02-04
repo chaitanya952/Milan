@@ -125,7 +125,7 @@ export default function RegistrationForm({
       onClick={onClose}
     >
       <motion.div
-        className="relative w-full max-w-2xl my-8 glass rounded-3xl p-6 md:p-8 border-2 border-white/10"
+        className="relative w-full max-w-4xl my-8 glass rounded-3xl p-6 md:p-8 border-2 border-white/10"
         initial={{ scale: 0.9, y: 50 }}
         animate={{ scale: 1, y: 0 }}
         exit={{ scale: 0.9, y: 50 }}
