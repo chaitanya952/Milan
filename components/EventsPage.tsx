@@ -107,7 +107,7 @@ function EventCard({
 
 function EventSection({ event }: { event: MainEvent }) {
   return (
-    <section className="relative py-20 px-4 sm:px-6 lg:px-8">
+    <section className="relative py-12 px-4 sm:px-6 lg:px-8">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <div
@@ -125,7 +125,7 @@ function EventSection({ event }: { event: MainEvent }) {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-12"
+          className="text-center mb-8"
         >
           <motion.div
             className="inline-flex items-center gap-3 mb-4"

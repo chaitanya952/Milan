@@ -11,7 +11,7 @@ export default function EventOverview() {
 
   return (
     <>
-      <section className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-fest-darker to-fest-dark">
+      <section className="relative py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-fest-darker to-fest-dark">
         {/* Background Pattern */}
         <div className="absolute inset-0 opacity-5">
           <div
@@ -29,7 +29,7 @@ export default function EventOverview() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-16"
+            className="text-center mb-10"
           >
             <motion.div
               className="inline-block mb-4"
@@ -43,8 +43,8 @@ export default function EventOverview() {
               </span>
             </motion.div>
 
-            <h2 className="text-5xl sm:text-6xl md:text-7xl font-black mb-6">
-              <span className="glow-text gradient-text">Three Epic Journeys</span>
+            <h2 className="text-5xl sm:text-6xl md:text-7xl font-black mb-6 text-white">
+              Three Epic Journeys
             </h2>
 
             <p className="text-xl text-gray-400 max-w-3xl mx-auto">

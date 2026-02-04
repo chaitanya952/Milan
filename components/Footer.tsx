@@ -11,7 +11,6 @@ export default function Footer() {
   ];
 
   const quickLinks = [
-    { name: 'About Milan', href: '#about' },
     { name: 'Events', href: '#events' },
     { name: 'Schedule', href: '#schedule' },
     { name: 'Sponsors', href: '#sponsors' },
@@ -51,8 +50,8 @@ export default function Footer() {
               transition={{ duration: 0.6 }}
             >
               <h3 className="text-4xl font-black mb-4">
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-orange via-neon-pink to-neon-purple">
-                  MILAN
+                <span className="text-transparent bg-clip-text  from-neon-orange via-neon-pink to-neon-purple">
+                  Ready to experience Milan
                 </span>
               </h3>
               <p className="text-gray-400 mb-6 max-w-md leading-relaxed">
@@ -182,31 +181,6 @@ export default function Footer() {
               </a>
             </div>
           </div>
-
-          {/* Made with Love */}
-          <motion.div
-            className="text-center mt-6 text-sm text-gray-500"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.5 }}
-          >
-            Made with{' '}
-            <motion.span
-              className="inline-block text-neon-pink"
-              animate={{
-                scale: [1, 1.2, 1],
-              }}
-              transition={{
-                duration: 1,
-                repeat: Infinity,
-                ease: 'easeInOut',
-              }}
-            >
-              ❤️
-            </motion.span>{' '}
-            by Milan Team
-          </motion.div>
         </motion.div>
       </div>
 

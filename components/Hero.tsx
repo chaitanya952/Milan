@@ -39,37 +39,6 @@ export default function Hero() {
         />
       </div>
 
-      {/* College Logo & Accreditation - Top */}
-      <motion.div
-        className="absolute top-8 left-8 z-20 glass rounded-2xl p-4 border-2 border-white/10"
-        initial={{ opacity: 0, x: -50 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 0.2 }}
-      >
-        <div className="flex items-center gap-4">
-          {/* College Logo */}
-          <div className="w-16 h-16 bg-white rounded-xl p-2">
-            {/* <Image
-              src={process.env.NEXT_PUBLIC_COLLEGE_LOGO || '/images/college-logo.png'}
-              alt="College Logo"
-              width={64}
-              height={64}
-              className="object-contain"
-            /> */}
-            <div className="w-full h-full flex items-center justify-center text-2xl font-black text-fest-dark">
-              V
-            </div>
-          </div>
-          <div>
-            <div className="font-bold text-sm text-white">
-              {process.env.NEXT_PUBLIC_COLLEGE_NAME || 'Vignan Institute'}
-            </div>
-            <div className="text-xs text-neon-blue">NAAC A+ Accredited</div>
-            <div className="text-xs text-gray-400">NBA Approved</div>
-          </div>
-        </div>
-      </motion.div>
-
       {/* Animated Particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-10">
         {[...Array(20)].map((_, i) => (
@@ -119,17 +88,40 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          {/* Vignan Badge */}
+          {/* College Logo - Separate Container */}
           <motion.div
-            className="inline-block mb-6"
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.2, type: 'spring', stiffness: 200 }}
+            className="flex justify-center items-center mt-16 sm:mt-20 md:mt-24 mb-2"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3, duration: 0.6 }}
           >
-            <div className="glass px-6 py-3 rounded-full border-2 border-neon-blue/50 neon-border">
-              <span className="text-neon-blue font-semibold text-sm sm:text-base tracking-wider">
-                VIGNAN INSTITUTE PRESENTS
-              </span>
+            <div className="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 lg:w-72 lg:h-72">
+              <Image
+                src="/images/college-logo.png"
+                alt="College Logo"
+                width={600}
+                height={600}
+                priority
+                className="object-contain bg-transparent w-full h-full"
+              />
+            </div>
+          </motion.div>
+
+          {/* College Credits - Separate Container with LARGER size */}
+          <motion.div
+            className="flex justify-center items-center mb-3"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.6 }}
+          >
+            <div className="relative w-[32rem] sm:w-[42rem] md:w-[52rem] lg:w-[60rem] h-18 sm:h-22 md:h-28 lg:h-32">
+              <Image
+                src="/images/college-credits.png"
+                alt="College Credits"
+                fill
+                priority
+                className="object-contain bg-transparent"
+              />
             </div>
           </motion.div>
 
@@ -138,7 +130,7 @@ export default function Hero() {
             className="hero-title text-7xl sm:text-8xl md:text-9xl font-black mb-6 glow-text-3d text-white"
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.4, duration: 0.8, type: 'spring' }}
+            transition={{ delay: 0.5, duration: 0.8, type: 'spring' }}
           >
             <span className="inline-block animate-glow-pulse text-transparent bg-clip-text bg-gradient-to-r from-neon-pink via-neon-purple to-neon-blue">
               MILAN

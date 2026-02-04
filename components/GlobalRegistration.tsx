@@ -10,7 +10,7 @@ export default function GlobalRegistration() {
 
   return (
     <>
-      <section className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-fest-dark to-fest-darker overflow-hidden">
+      <section className="relative py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-fest-dark to-fest-darker overflow-hidden">
         {/* Background Effects */}
         <div className="absolute inset-0 opacity-10">
           <motion.div
@@ -61,7 +61,7 @@ export default function GlobalRegistration() {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <span className="glow-text gradient-text">Ready to Join Milan?</span>
+            <span className="text-white">Ready to Join Milan?</span>
           </motion.h2>
 
           {/* Description */}

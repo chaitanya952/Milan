@@ -9,7 +9,7 @@ export default function DJNight() {
   const isInView = useInView(ref, { once: true });
 
   return (
-    <section className="relative py-32 px-4 sm:px-6 lg:px-8 overflow-hidden bg-fest-darker">
+    <section className="relative py-16 px-4 sm:px-6 lg:px-8 overflow-hidden bg-fest-darker">
       {/* Animated Neon Wave Background */}
       <div className="absolute inset-0 overflow-hidden">
         {/* Multiple Wave Layers */}
@@ -119,10 +119,8 @@ export default function DJNight() {
               </span>
             </motion.div>
 
-            <h2 className="text-5xl sm:text-6xl md:text-7xl font-black mb-6 glow-text-3d">
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-pink via-neon-purple to-neon-blue animate-gradient-shift">
-                DJ NIGHT
-              </span>
+            <h2 className="text-5xl sm:text-6xl md:text-7xl font-black mb-6 text-white">
+              DJ NIGHT
             </h2>
 
             <p className="text-xl text-gray-300 mb-8 leading-relaxed">

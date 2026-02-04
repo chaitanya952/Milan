@@ -43,7 +43,7 @@ export default function About() {
   ];
 
   return (
-    <section className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-fest-dark to-fest-darker overflow-hidden">
+    <section className="relative py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-fest-dark to-fest-darker overflow-hidden">
       {/* Background Elements */}
       <div className="absolute inset-0 opacity-10">
         <motion.div
@@ -78,7 +78,7 @@ export default function About() {
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-16"
+          className="text-center mb-10"
         >
           <motion.div
             className="inline-block mb-4"
@@ -91,8 +91,8 @@ export default function About() {
             </span>
           </motion.div>
 
-          <h2 className="text-5xl sm:text-6xl md:text-7xl font-black mb-6">
-            <span className="glow-text gradient-text">Experience Milan</span>
+          <h2 className="text-5xl sm:text-6xl md:text-7xl font-black mb-6 text-white">
+            Experience Milan
           </h2>
 
           <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed">

@@ -63,8 +63,8 @@ export const eventsData: MainEvent[] = [
       name: '',
       phone: '+91 98765 00001'
     },
-    pptUrl: '/downloads/Kritansh.pdf',
-    googleFormUrl: '',
+    pptUrl: '/downloads/IGNITRON.pptx',
+    googleFormUrl: 'https://docs.google.com/forms/d/e/1FAIpQLSffZ4GtQw9OBUJLqadW_b_r-WHs1_vN_E73bYMwDEpI3ynSQg/viewform?usp=dialog',
     upiQrCode: '/qr-codes/ignitron-upi.jpeg',
     subEvents: [
       {
@@ -83,10 +83,11 @@ export const eventsData: MainEvent[] = [
         date: 'February 18',
         time: '09:00 AM onwards',
         coordinators: [
-    { name: 'Event Coordinator 1', phone: '+91 98765 43210' },
-    { name: 'Event Coordinator 2', phone: '+91 98765 43211' }
+    { name: 'G. ANUSREE', phone: '9502211025' },
+    { name: 'T. SAI TEJA', phone: '8247507793' },
+    { name: 'SRI VATSAVA', phone: '9392067800' }
   ], // Added missing coordinators array
-        pptUrl: '' // Added missing pptUrl
+        pptUrl: '/downloads/IGNITRON.pptx' // Added missing pptUrl
       },
       
     ]
@@ -120,14 +121,14 @@ export const eventsData: MainEvent[] = [
         prizes: '22,000 INR',
         teamSize: 'group',
         minTeamSize: 2,
-        maxTeamSize: 2,
         entryFee: { single: 300, group: 600 },
         venue: 'College Premises',
         date: 'February 19',
         time: '9:00 AM - 7:00 PM',
         coordinators: [
-    { name: 'Event Coordinator 1', phone: '+91 98765 43210' },
-    { name: 'Event Coordinator 2', phone: '+91 98765 43211' }
+    { name: 'G. ANUSREE', phone: '9502211025' },
+    { name: 'T. SAI TEJA', phone: '8247507793' },
+    { name: 'SRI VATSAVA', phone: '9392067800' }
   ], // Added missing coordinators array
         pptUrl: '' // Added missing pptUrl
       },
@@ -147,8 +148,9 @@ export const eventsData: MainEvent[] = [
         date: 'February 20',
         time: '5:00 PM onwards',
         coordinators: [
-    { name: 'Event Coordinator 1', phone: '+91 98765 43210' },
-    { name: 'Event Coordinator 2', phone: '+91 98765 43211' }
+   { name: 'G. ANUSREE', phone: '9502211025' },
+    { name: 'T. SAI TEJA', phone: '8247507793' },
+    { name: 'SRI VATSAVA', phone: '9392067800' }
   ], // Added missing coordinators array
         pptUrl: '' // Added missing pptUrl
       },
@@ -168,10 +170,11 @@ export const eventsData: MainEvent[] = [
         date: 'February 19',
         time: '6:00 PM - 9:00 PM',
         coordinators: [
-    { name: 'Event Coordinator 1', phone: '+91 98765 43210' },
-    { name: 'Event Coordinator 2', phone: '+91 98765 43211' }
-  ],// Added missing coordinators array
-        pptUrl: '' // Added missing pptUrl
+    { name: 'G. ANUSREE', phone: '9502211025' },
+    { name: 'T. SAI TEJA', phone: '8247507793' },
+    { name: 'SRI VATSAVA', phone: '9392067800' }
+  ], // Added missing pptUrl
+        pptUrl: '/downloads/kritansh-cricket.pptx'
       },
       {
         id: 'kritansh-4',
@@ -189,10 +192,11 @@ export const eventsData: MainEvent[] = [
         date: 'February 19',
         time: '6:00 PM - 9:00 PM',
         coordinators: [
-    { name: 'Event Coordinator 1', phone: '+91 98765 43210' },
-    { name: 'Event Coordinator 2', phone: '+91 98765 43211' }
+    { name: 'G. ANUSREE', phone: '9502211025' },
+    { name: 'T. SAI TEJA', phone: '8247507793' },
+    { name: 'SRI VATSAVA', phone: '9392067800' }
   ], // Added missing coordinators array
-        pptUrl: '' // Added missing pptUrl
+        pptUrl: '/downloads/kritansh-box-cricket-women.pptx' // Added missing pptUrl
       },
       {
         id: 'kritansh-5',
@@ -203,15 +207,17 @@ export const eventsData: MainEvent[] = [
         rules: ['Team size as per standard rules'],
         prizes: '15,000 INR',
         teamSize: 'group',
+        maxTeamSize: 12,
         entryFee: { group: 1200 },
         venue: 'College Premises',
         date: 'February 19',
         time: '6:00 PM - 9:00 PM',
         coordinators: [
-    { name: 'Event Coordinator 1', phone: '+91 98765 43210' },
-    { name: 'Event Coordinator 2', phone: '+91 98765 43211' }
+    { name: 'G. ANUSREE', phone: '9502211025' },
+    { name: 'T. SAI TEJA', phone: '8247507793' },
+    { name: 'SRI VATSAVA', phone: '9392067800' }
   ], // Added missing coordinators array
-        pptUrl: '' // Added missing pptUrl
+        pptUrl: '/downloads/kritansh-basketball-men.pptx' // Added missing pptUrl
       },
       {
         id: 'kritansh-6',
@@ -229,10 +235,11 @@ export const eventsData: MainEvent[] = [
         date: 'February 19',
         time: '6:00 PM - 9:00 PM',
         coordinators: [
-    { name: 'Event Coordinator 1', phone: '+91 98765 43210' },
-    { name: 'Event Coordinator 2', phone: '+91 98765 43211' }
+    { name: 'G. ANUSREE', phone: '9502211025' },
+    { name: 'T. SAI TEJA', phone: '8247507793' },
+    { name: 'SRI VATSAVA', phone: '9392067800' }
   ], // Added missing coordinators array
-        pptUrl: '' // Added missing pptUrl
+        pptUrl: '/downloads/kritansh-carroms.pptx' // Added missing pptUrl
       },
       {
         id: 'kritansh-7',
@@ -248,10 +255,11 @@ export const eventsData: MainEvent[] = [
         date: 'February 19',
         time: '6:00 PM - 9:00 PM',
         coordinators: [
-    { name: 'Event Coordinator 1', phone: '+91 98765 43210' },
-    { name: 'Event Coordinator 2', phone: '+91 98765 43211' }
+    { name: 'G. ANUSREE', phone: '9502211025' },
+    { name: 'T. SAI TEJA', phone: '8247507793' },
+    { name: 'SRI VATSAVA', phone: '9392067800' }
   ], // Added missing coordinators array
-        pptUrl: '' // Added missing pptUrl
+        pptUrl: '/downloads/kritansh-chess.pptx' // Added missing pptUrl
       }
     ]
   },
@@ -268,15 +276,15 @@ export const eventsData: MainEvent[] = [
     gradient: 'from-neon-green to-neon-blue',
     icon: '🎮',
     coordinator: {
-      name: 'Mr. Vikram Singh',
-      phone: '+91 98765 00003'
+      name: 'Dr. B. Amarnath Reddy',
+      phone: '+91 77996 39977'
     },
     pptUrl: '/downloads/chrysalis-details.pptx',
     upiQrCode: '/qr-codes/chrysalis-upi.png',
     subEvents: [
       {
         id: 'chrysalis-1',
-        name: 'Mad',
+        name: 'Marketing Mad',
         description: 'Mad',
         category: 'Mind Sports',
         type: 'formal',
@@ -290,10 +298,12 @@ export const eventsData: MainEvent[] = [
         date: 'February 21',
         time: '10:00 AM onwards',
         coordinators: [
-    { name: 'Event Coordinator 1', phone: '+91 98765 43210' },
-    { name: 'Event Coordinator 2', phone: '+91 98765 43211' }
+  { "name": "SAI PRANEETH", "phone": "+91 7993931713" },
+  { "name": "CHARAN", "phone": "+91 9949162851" },
+  { "name": "ANNIKA", "phone": "+91 9618682968" },
+  { "name": "HARSHITHA", "phone": "+91 8712143102" }
   ], // Added missing coordinators array
-        pptUrl: '' // Added missing pptUrl
+        pptUrl: '/downloads/chrysalis-marketing-mad.pptx' // Added missing pptUrl
       },
       {
         id: 'chrysalis-2',
@@ -309,10 +319,12 @@ export const eventsData: MainEvent[] = [
         date: 'February 21',
         time: '2:00 PM - 6:00 PM',
         coordinators: [
-    { name: 'Event Coordinator 1', phone: '+91 98765 43210' },
-    { name: 'Event Coordinator 2', phone: '+91 98765 43211' }
+     { "name": "SAI PRANEETH", "phone": "+91 7993931713" },
+  { "name": "CHARAN", "phone": "+91 9949162851" },
+  { "name": "ANNIKA", "phone": "+91 9618682968" },
+  { "name": "HARSHITHA", "phone": "+91 8712143102" }
   ], // Added missing coordinators array
-        pptUrl: '' // Added missing pptUrl
+        pptUrl: '/downloads/chrysalis-optimops.pptx' // Added missing pptUrl
       },
       {
         id: 'chrysalis-3',
@@ -330,10 +342,11 @@ export const eventsData: MainEvent[] = [
         date: 'February 21',
         time: '9:00 AM - 2:00 PM',
         coordinators: [
-    { name: 'Event Coordinator 1', phone: '+91 98765 43210' },
-    { name: 'Event Coordinator 2', phone: '+91 98765 43211' }
+    { name: 'G. ANUSREE', phone: '9502211025' },
+    { name: 'T. SAI TEJA', phone: '8247507793' },
+    { name: 'SRI VATSAVA', phone: '9392067800' }
   ], // Added missing coordinators array
-        pptUrl: '' // Added missing pptUrl
+        pptUrl: '/downloads/chrysalis-humaneer.pptx' // Added missing pptUrl
       },
       {
         id: 'chrysalis-4',
@@ -351,10 +364,11 @@ export const eventsData: MainEvent[] = [
         date: 'February 21',
         time: '9:00 AM - 2:00 PM',
         coordinators: [
-    { name: 'Event Coordinator 1', phone: '+91 98765 43210' },
-    { name: 'Event Coordinator 2', phone: '+91 98765 43211' }
+    { name: 'G. ANUSREE', phone: '9502211025' },
+    { name: 'T. SAI TEJA', phone: '8247507793' },
+    { name: 'SRI VATSAVA', phone: '9392067800' }
   ],// Added missing coordinators array
-        pptUrl: '' // Added missing pptUrl
+        pptUrl: '/downloads/chrysalis-finfunda.pptx' // Added missing pptUrl
       },
       {
         id: 'chrysalis-5',
@@ -370,10 +384,12 @@ export const eventsData: MainEvent[] = [
         date: 'February 21',
         time: '9:00 AM - 2:00 PM',
         coordinators: [
-    { name: 'Event Coordinator 1', phone: '+91 98765 43210' },
-    { name: 'Event Coordinator 2', phone: '+91 98765 43211' }
+     { "name": "SAI PRANEETH", "phone": "+91 7993931713" },
+  { "name": "CHARAN", "phone": "+91 9949162851" },
+  { "name": "ANNIKA", "phone": "+91 9618682968" },
+  { "name": "HARSHITHA", "phone": "+91 8712143102" }
   ], // Added missing coordinators array
-        pptUrl: '' // Added missing pptUrl
+        pptUrl: '/downloads/chrysalis-singing-battle.pptx' // Added missing pptUrl
       },
       {
         id: 'chrysalis-6',
@@ -389,10 +405,12 @@ export const eventsData: MainEvent[] = [
         date: 'February 21',
         time: '9:00 AM - 2:00 PM',
         coordinators: [
-    { name: 'Event Coordinator 1', phone: '+91 98765 43210' },
-    { name: 'Event Coordinator 2', phone: '+91 98765 43211' }
+     { "name": "SAI PRANEETH", "phone": "+91 7993931713" },
+  { "name": "CHARAN", "phone": "+91 9949162851" },
+  { "name": "ANNIKA", "phone": "+91 9618682968" },
+  { "name": "HARSHITHA", "phone": "+91 8712143102" }
   ], // Added missing coordinators array
-        pptUrl: '' // Added missing pptUrl
+        pptUrl: '/downloads/chrysalis-dancing-battle.pptx' // Added missing pptUrl
       },
       {
         id: 'chrysalis-7',
@@ -410,10 +428,11 @@ export const eventsData: MainEvent[] = [
         date: 'February 21',
         time: '9:00 AM - 2:00 PM',
         coordinators: [
-    { name: 'Event Coordinator 1', phone: '+91 98765 43210' },
-    { name: 'Event Coordinator 2', phone: '+91 98765 43211' }
+    { name: 'G. ANUSREE', phone: '9502211025' },
+    { name: 'T. SAI TEJA', phone: '8247507793' },
+    { name: 'SRI VATSAVA', phone: '9392067800' }
   ], // Added missing coordinators array
-        pptUrl: '' // Added missing pptUrl
+        pptUrl: '/downloads/chrysalis-dancing-group.pptx' // Added missing pptUrl
       },
       {
         id: 'chrysalis-8',
@@ -429,10 +448,11 @@ export const eventsData: MainEvent[] = [
         date: 'February 21',
         time: '9:00 AM - 2:00 PM',
         coordinators: [
-    { name: 'Event Coordinator 1', phone: '+91 98765 43210' },
-    { name: 'Event Coordinator 2', phone: '+91 98765 43211' }
+    { name: 'G. ANUSREE', phone: '9502211025' },
+    { name: 'T. SAI TEJA', phone: '8247507793' },
+    { name: 'SRI VATSAVA', phone: '9392067800' }
   ], // Added missing coordinators array
-        pptUrl: '' // Added missing pptUrl
+        pptUrl: '/downloads/chrysalis-ramp-walk.pptx' // Added missing pptUrl
       },
       {
         id: 'chrysalis-9',
@@ -448,10 +468,12 @@ export const eventsData: MainEvent[] = [
         date: 'February 21',
         time: '9:00 AM - 2:00 PM',
         coordinators: [
-    { name: 'Event Coordinator 1', phone: '+91 98765 43210' },
-    { name: 'Event Coordinator 2', phone: '+91 98765 43211' }
+     { "name": "SAI PRANEETH", "phone": "+91 7993931713" },
+  { "name": "CHARAN", "phone": "+91 9949162851" },
+  { "name": "ANNIKA", "phone": "+91 9618682968" },
+  { "name": "HARSHITHA", "phone": "+91 8712143102" }
   ],// Added missing coordinators array
-        pptUrl: '' // Added missing pptUrl
+        pptUrl: '/downloads/chrysalis-painting-competition.pptx' // Added missing pptUrl
       },
       {
         id: 'chrysalis-10',
@@ -469,10 +491,11 @@ export const eventsData: MainEvent[] = [
         date: 'February 21',
         time: '9:00 AM - 2:00 PM',
        coordinators: [
-    { name: 'Event Coordinator 1', phone: '+91 98765 43210' },
-    { name: 'Event Coordinator 2', phone: '+91 98765 43211' }
+    { name: 'G. ANUSREE', phone: '9502211025' },
+    { name: 'T. SAI TEJA', phone: '8247507793' },
+    { name: 'SRI VATSAVA', phone: '9392067800' }
   ], // Added missing coordinators array
-        pptUrl: '' // Added missing pptUrl
+        pptUrl: '/downloads/chrysalis-treasure-hunt.pptx' // Added missing pptUrl
       },
       {
         id: 'chrysalis-11',
@@ -488,10 +511,11 @@ export const eventsData: MainEvent[] = [
         date: 'February 21',
         time: '9:00 AM - 2:00 PM',
         coordinators: [
-    { name: 'Event Coordinator 1', phone: '+91 98765 43210' },
-    { name: 'Event Coordinator 2', phone: '+91 98765 43211' }
+    { name: 'G. ANUSREE', phone: '9502211025' },
+    { name: 'T. SAI TEJA', phone: '8247507793' },
+    { name: 'SRI VATSAVA', phone: '9392067800' }
   ], // Added missing coordinators array
-        pptUrl: '' // Added missing pptUrl
+        pptUrl: '/downloads/chrysalis-treasure-hunt-individual.pptx' // Added missing pptUrl
       },
       {
         id: 'chrysalis-12',
@@ -507,10 +531,11 @@ export const eventsData: MainEvent[] = [
         date: 'February 21',
         time: '9:00 AM - 2:00 PM',
         coordinators: [
-    { name: 'Event Coordinator 1', phone: '+91 98765 43210' },
-    { name: 'Event Coordinator 2', phone: '+91 98765 43211' }
+    { name: 'G. ANUSREE', phone: '9502211025' },
+    { name: 'T. SAI TEJA', phone: '8247507793' },
+    { name: 'SRI VATSAVA', phone: '9392067800' }
   ], // Added missing coordinators array
-        pptUrl: '' // Added missing pptUrl
+        pptUrl: '/downloads/chrysalis-photography-competition.pptx' // Added missing pptUrl
       }
     ]
   }
