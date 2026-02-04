@@ -1,10 +1,26 @@
-// Replace the entire file with this fixed version
 'use client';
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
-import { SubEvent } from '@/lib/eventsData';
-import RegistrationForm from './RegistrationForm';
+import RegistrationForm, { SubEvent, Coordinator } from './RegistrationForm';
+import { getEventIcon } from '@/lib/EventIcons';
+import * as LucideIcons from 'lucide-react';
+
+const DynamicIcon = ({
+  name,
+  size = 24,
+  className = '',
+  strokeWidth = 2
+}: {
+  name: string;
+  size?: number;
+  className?: string;
+  strokeWidth?: number;
+}) => {
+  const IconComponent = (LucideIcons as any)[name];
+  if (!IconComponent) return <span className={className}>🏆</span>;
+  return <IconComponent size={size} className={className} strokeWidth={strokeWidth} />;
+};
 
 interface SubEventDetailProps {
   subEvent: SubEvent;
@@ -12,11 +28,6 @@ interface SubEventDetailProps {
   eventColor: string;
   upiQrCode: string;
   onClose: () => void;
-}
-
-interface Coordinator {
-  name: string;
-  phone: string;
 }
 
 export default function SubEventDetail({
@@ -31,18 +42,31 @@ export default function SubEventDetail({
   const isGroupEvent = subEvent.teamSize === 'group';
   const entryFee = isGroupEvent ? subEvent.entryFee.group : subEvent.entryFee.single;
 
+  // Get dynamic icon based on event name and category
+  const iconName = getEventIcon(subEvent.name, subEvent.category);
+
   // Get color classes based on eventColor
   const colorClasses = {
-    text: eventColor === 'neon-blue' ? 'text-neon-blue' :
-          eventColor === 'neon-pink' ? 'text-neon-pink' :
-          eventColor === 'neon-green' ? 'text-neon-green' :
-          eventColor === 'neon-purple' ? 'text-neon-purple' :
-          'text-neon-cyan',
-    from: eventColor === 'neon-blue' ? 'from-neon-blue' :
-          eventColor === 'neon-pink' ? 'from-neon-pink' :
-          eventColor === 'neon-green' ? 'from-neon-green' :
-          eventColor === 'neon-purple' ? 'from-neon-purple' :
-          'from-neon-cyan',
+    text:
+      eventColor === 'neon-blue'
+        ? 'text-neon-blue'
+        : eventColor === 'neon-pink'
+        ? 'text-neon-pink'
+        : eventColor === 'neon-green'
+        ? 'text-neon-green'
+        : eventColor === 'neon-purple'
+        ? 'text-neon-purple'
+        : 'text-neon-cyan',
+    from:
+      eventColor === 'neon-blue'
+        ? 'from-neon-blue'
+        : eventColor === 'neon-pink'
+        ? 'from-neon-pink'
+        : eventColor === 'neon-green'
+        ? 'from-neon-green'
+        : eventColor === 'neon-purple'
+        ? 'from-neon-purple'
+        : 'from-neon-cyan',
   };
 
   return (
@@ -72,15 +96,9 @@ export default function SubEventDetail({
           {/* Header */}
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-4">
-              <span className="text-4xl">
-                {subEvent.category === 'Coding'
-                  ? '💻'
-                  : subEvent.category === 'Dance'
-                  ? '💃'
-                  : subEvent.category === 'E-Sports'
-                  ? '🎮'
-                  : '🎭'}
-              </span>
+              <div className={`${colorClasses.text}`}>
+                <DynamicIcon name={iconName} size={48} strokeWidth={2} />
+              </div>
               <div>
                 <h2 className="text-3xl md:text-4xl font-black">
                   <span className={`${colorClasses.text} glow-text`}>{subEvent.name}</span>
@@ -130,19 +148,21 @@ export default function SubEventDetail({
           </div>
 
           {/* Rules */}
-          <div className="glass rounded-xl p-6 mb-6 border border-white/10">
-            <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <span>📋</span> Rules & Guidelines
-            </h3>
-            <ul className="space-y-2">
-              {subEvent.rules.map((rule, index) => (
-                <li key={index} className="flex items-start gap-3">
-                  <span className={`${colorClasses.text} mt-1`}>✦</span>
-                  <span className="text-gray-300">{rule}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {subEvent.rules && subEvent.rules.length > 0 && (
+            <div className="glass rounded-xl p-6 mb-6 border border-white/10">
+              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                <span>📋</span> Rules & Guidelines
+              </h3>
+              <ul className="space-y-2">
+                {subEvent.rules.map((rule, index) => (
+                  <li key={index} className="flex items-start gap-3">
+                    <span className={`${colorClasses.text} mt-1`}>✦</span>
+                    <span className="text-gray-300">{rule}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {/* Coordinators */}
           {subEvent.coordinators && subEvent.coordinators.length > 0 && (
@@ -198,14 +218,14 @@ export default function SubEventDetail({
         </motion.div>
       </motion.div>
 
-      {/* Registration Form Modal - Only show when not already in a modal */}
+      {/* Registration Form Modal - PASS ALL OPTIONAL PROPS */}
       <AnimatePresence>
         {showRegistration && (
           <RegistrationForm
             subEvent={subEvent}
             eventName={eventName}
             eventColor={eventColor}
-            eventCoordinator={subEvent.coordinators[0] || { name: 'Coordinator', phone: '+91 00000 00000' }}
+            eventCoordinator={subEvent.coordinators[0]}
             upiQrCode={upiQrCode}
             onClose={() => setShowRegistration(false)}
           />

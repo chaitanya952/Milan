@@ -88,49 +88,12 @@ export default function Hero() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          {/* College Logo - Separate Container */}
-          <motion.div
-            className="flex justify-center items-center mt-16 sm:mt-20 md:mt-24 mb-2"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3, duration: 0.6 }}
-          >
-            <div className="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 lg:w-72 lg:h-72">
-              <Image
-                src="/images/college-logo.png"
-                alt="College Logo"
-                width={600}
-                height={600}
-                priority
-                className="object-contain bg-transparent w-full h-full"
-              />
-            </div>
-          </motion.div>
-
-          {/* College Credits - Separate Container with LARGER size */}
-          <motion.div
-            className="flex justify-center items-center mb-3"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.6 }}
-          >
-            <div className="relative w-[32rem] sm:w-[42rem] md:w-[52rem] lg:w-[60rem] h-18 sm:h-22 md:h-28 lg:h-32">
-              <Image
-                src="/images/college-credits.png"
-                alt="College Credits"
-                fill
-                priority
-                className="object-contain bg-transparent"
-              />
-            </div>
-          </motion.div>
-
           {/* Main Title - MILAN */}
           <motion.h1
             className="hero-title text-7xl sm:text-8xl md:text-9xl font-black mb-6 glow-text-3d text-white"
             initial={{ opacity: 0, scale: 0.5 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.5, duration: 0.8, type: 'spring' }}
+            transition={{ delay: 0.4, duration: 0.8, type: 'spring' }}
           >
             <span className="inline-block animate-glow-pulse text-transparent bg-clip-text bg-gradient-to-r from-neon-pink via-neon-purple to-neon-blue">
               MILAN

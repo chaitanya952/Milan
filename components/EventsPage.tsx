@@ -4,7 +4,21 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { eventsData, MainEvent, SubEvent } from '@/lib/eventsData';
 import { AnimatePresence } from 'framer-motion';
+import * as LucideIcons from 'lucide-react';
+import { Calendar, Clock, User, Users, Trophy } from 'lucide-react';
 import SubEventDetail from './SubEventDetail';
+import { getEventIcon } from '@/lib/EventIcons';
+
+const DynamicIcon = ({ name, size = 24, className = "", strokeWidth = 2 }: { 
+  name: string, 
+  size?: number, 
+  className?: string,
+  strokeWidth?: number 
+}) => {
+  const IconComponent = (LucideIcons as any)[name];
+  if (!IconComponent) return <Trophy size={size} className={className} strokeWidth={strokeWidth} />;
+  return <IconComponent size={size} className={className} strokeWidth={strokeWidth} />;
+};
 
 function EventCard({
   subEvent,
@@ -22,6 +36,9 @@ function EventCard({
   const [showDetail, setShowDetail] = useState(false);
   const isGroupEvent = subEvent.teamSize === 'group';
   const entryFee = isGroupEvent ? subEvent.entryFee.group : subEvent.entryFee.single;
+  
+  // Get dynamic icon based on event name and category
+  const iconName = getEventIcon(subEvent.name, subEvent.category);
 
   return (
     <>
@@ -39,9 +56,9 @@ function EventCard({
             <span className={`text-xs font-bold px-3 py-1 rounded-full bg-${eventColor}/20 text-${eventColor} border border-${eventColor}/50`}>
               {subEvent.category}
             </span>
-            <span className="text-2xl">
-              {isGroupEvent ? '👥' : '👤'}
-            </span>
+            <div className={`text-${eventColor}`}>
+              <DynamicIcon name={iconName} size={24} strokeWidth={2} />
+            </div>
           </div>
 
           {/* Title */}
@@ -71,11 +88,11 @@ function EventCard({
           {/* Date & Time */}
           <div className="flex items-center gap-4 text-xs text-gray-400 mb-4">
             <div className="flex items-center gap-1">
-              <span>📅</span>
+              <Calendar size={14} className={`text-${eventColor}`} />
               <span>{subEvent.date}</span>
             </div>
             <div className="flex items-center gap-1">
-              <span>⏰</span>
+              <Clock size={14} className={`text-${eventColor}`} />
               <span>{subEvent.time.split(' ')[0]}</span>
             </div>
           </div>
@@ -134,7 +151,9 @@ function EventSection({ event }: { event: MainEvent }) {
             viewport={{ once: true }}
             transition={{ type: 'spring' }}
           >
-            <span className="text-5xl">{event.icon}</span>
+            <div className={`text-5xl text-${event.color}`}>
+              <DynamicIcon name={event.icon} size={64} strokeWidth={2} />
+            </div>
             <h2 className="text-5xl sm:text-6xl md:text-7xl font-black">
               <span className={`gradient-text bg-gradient-to-r ${event.gradient} glow-text`}>
                 {event.title}

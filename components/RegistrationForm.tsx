@@ -1,9 +1,44 @@
 // RegistrationForm.tsx
+'use client';
+
 import React, { useState } from 'react';
 import { X } from 'lucide-react';
-import { SubEvent, Coordinator } from '@/lib/eventsData';
 
-interface RegistrationModalProps {
+// ===========================
+// TYPE DEFINITIONS
+// ===========================
+
+export interface Coordinator {
+  name: string;
+  phone: string;
+}
+
+export interface SubEvent {
+  id: string;
+  name: string;
+  category?: string;
+  description?: string;
+  entryFee: {
+    single?: number;
+    group?: number;
+  };
+  teamSize: 'single' | 'group';
+  minTeamSize?: number;
+  maxTeamSize?: number;
+  coordinators: Coordinator[];
+  date?: string;
+  time?: string;
+  venue?: string;
+  prizes?: string | string[];
+  rules?: string[];
+  pptUrl?: string;
+}
+
+// ===========================
+// PROPS INTERFACE - ALL OPTIONAL
+// ===========================
+
+interface RegistrationFormProps {
   isOpen?: boolean;
   onClose: () => void;
   subEvent?: SubEvent;
@@ -11,51 +46,77 @@ interface RegistrationModalProps {
   eventColor?: string;
   eventCoordinator?: Coordinator;
   upiQrCode?: string;
-  // Support for direct event prop if needed
-  event?: {
-    id: string;
-    name: string;
-    entryFee: {
-      single?: number;
-      group?: number;
+}
+
+// ===========================
+// DEFAULT VALUES
+// ===========================
+
+const DEFAULT_COORDINATOR: Coordinator = {
+  name: 'Event Coordinator',
+  phone: '+91 00000 00000'
+};
+
+const DEFAULT_EVENT = {
+  id: 'general',
+  name: 'General Registration',
+  entryFee: { single: 0 },
+  teamSize: 'single' as const,
+  coordinator: DEFAULT_COORDINATOR
+};
+
+// ===========================
+// HELPER FUNCTIONS
+// ===========================
+
+/**
+ * Safely derives event data from various possible props
+ * Returns a normalized event object with guaranteed values
+ */
+function deriveEventData(props: RegistrationFormProps) {
+  const { subEvent, eventName, eventCoordinator } = props;
+
+  if (subEvent) {
+    return {
+      id: subEvent.id,
+      name: subEvent.name,
+      entryFee: subEvent.entryFee,
+      teamSize: subEvent.teamSize,
+      minTeamSize: subEvent.minTeamSize,
+      maxTeamSize: subEvent.maxTeamSize,
+      coordinator: eventCoordinator || subEvent.coordinators?.[0] || DEFAULT_COORDINATOR
     };
-    teamSize: 'single' | 'group';
-    minTeamSize?: number;
-    maxTeamSize?: number;
-    coordinator: {
-      name: string;
-      phone: string;
-    };
+  }
+
+  return {
+    ...DEFAULT_EVENT,
+    name: eventName || DEFAULT_EVENT.name,
+    coordinator: eventCoordinator || DEFAULT_COORDINATOR
   };
 }
 
-const RegistrationModal: React.FC<RegistrationModalProps> = ({ 
-  isOpen = true, 
-  onClose, 
-  subEvent,
-  eventName,
-  eventColor,
-  eventCoordinator,
-  upiQrCode,
-  event: directEvent
-}) => {
-  // Derive event data from various possible props
-  const event = directEvent || (subEvent ? {
-    id: subEvent.id,
-    name: subEvent.name,
-    entryFee: subEvent.entryFee,
-    teamSize: subEvent.teamSize,
-    minTeamSize: subEvent.minTeamSize,
-    maxTeamSize: subEvent.maxTeamSize,
-    coordinator: eventCoordinator || subEvent.coordinators[0] || { name: 'Coordinator', phone: '+91 00000 00000' }
-  } : {
-    id: 'general',
-    name: eventName || 'General Registration',
-    entryFee: { single: 0 },
-    teamSize: 'single' as const,
-    coordinator: eventCoordinator || { name: 'Coordinator', phone: '+91 00000 00000' }
-  });
+/**
+ * Calculate entry fee based on team size
+ */
+function calculateEntryFee(event: ReturnType<typeof deriveEventData>): number {
+  if (event.teamSize === 'single') {
+    return event.entryFee.single ?? 0;
+  }
+  return event.entryFee.group ?? event.entryFee.single ?? 0;
+}
 
+// ===========================
+// MAIN COMPONENT
+// ===========================
+
+const RegistrationForm: React.FC<RegistrationFormProps> = (props) => {
+  const { isOpen = true, onClose } = props;
+
+  // Derive event data with safe defaults
+  const event = deriveEventData(props);
+  const entryFee = calculateEntryFee(event);
+
+  // Form state
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -67,25 +128,54 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({
     teamMembers: ''
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Handle registration submission
-    console.log('Registration data:', formData);
-    onClose();
-  };
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  // ===========================
+  // EVENT HANDLERS
+  // ===========================
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+  ) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value
     });
   };
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      // TODO: Integration with Google Sheets
+      console.log('Registration data:', {
+        ...formData,
+        eventId: event.id,
+        eventName: event.name,
+        entryFee: entryFee,
+        timestamp: new Date().toISOString()
+      });
+
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+
+      alert('Registration successful! (Google Sheets integration pending)');
+      onClose();
+    } catch (error) {
+      console.error('Registration error:', error);
+      alert('Registration failed. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Don't render if not open
   if (!isOpen) return null;
 
-  const entryFee = event.teamSize === 'single' 
-    ? event.entryFee.single 
-    : event.entryFee.group || event.entryFee.single;
+  // ===========================
+  // RENDER
+  // ===========================
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-2 md:p-4 bg-black/95 backdrop-blur-sm">
@@ -96,11 +186,14 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({
             <h2 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-[#ff006e] to-[#00f0ff] bg-clip-text text-transparent">
               {event.name} - Registration
             </h2>
-            <p className="text-xs md:text-sm text-gray-400 mt-0.5">Fill in your details to register</p>
+            <p className="text-xs md:text-sm text-gray-400 mt-0.5">
+              Fill in your details to register
+            </p>
           </div>
           <button
             onClick={onClose}
             className="p-1.5 rounded-lg hover:bg-[#00f0ff]/10 text-gray-400 hover:text-white transition-colors"
+            aria-label="Close registration form"
           >
             <X size={20} />
           </button>
@@ -111,6 +204,7 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({
           {/* Event Details - Compact */}
           <div className="mb-4 p-3 md:p-4 rounded-xl bg-[#050816]/50 border border-[#00f0ff]/10">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+              {/* Entry Fee */}
               <div className="flex items-center">
                 <div className="w-6 h-6 rounded-full bg-[#ff006e]/20 flex items-center justify-center mr-2">
                   <span className="text-xs">💰</span>
@@ -120,7 +214,8 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({
                   <p className="text-sm font-bold text-white">₹{entryFee}</p>
                 </div>
               </div>
-              
+
+              {/* Team Size */}
               <div className="flex items-center">
                 <div className="w-6 h-6 rounded-full bg-[#00f0ff]/20 flex items-center justify-center mr-2">
                   <span className="text-xs">👥</span>
@@ -128,20 +223,21 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({
                 <div>
                   <p className="text-xs text-gray-400">Team Size</p>
                   <p className="text-sm font-medium text-[#00f0ff]">
-                    {event.teamSize === 'single' 
-                      ? 'Individual' 
+                    {event.teamSize === 'single'
+                      ? 'Individual'
                       : `${event.minTeamSize || 2}-${event.maxTeamSize || 5} members`}
                   </p>
                 </div>
               </div>
-              
+
+              {/* Coordinator Contact */}
               <div className="flex items-center">
                 <div className="w-6 h-6 rounded-full bg-[#8b5cf6]/20 flex items-center justify-center mr-2">
                   <span className="text-xs">📞</span>
                 </div>
                 <div>
                   <p className="text-xs text-gray-400">Coordinator</p>
-                  <a 
+                  <a
                     href={`tel:${event.coordinator.phone}`}
                     className="text-sm font-medium text-[#00f0ff] hover:underline"
                   >
@@ -150,7 +246,8 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({
                 </div>
               </div>
             </div>
-            
+
+            {/* Coordinator Name */}
             {event.coordinator.name && (
               <div className="text-xs text-gray-300 mt-2">
                 Coordinator: <span className="font-medium">{event.coordinator.name}</span>
@@ -162,11 +259,15 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({
           <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4">
             {/* Full Name */}
             <div className="form-group">
-              <label className="block text-xs md:text-sm font-medium text-gray-300 mb-1">
+              <label
+                htmlFor="fullName"
+                className="block text-xs md:text-sm font-medium text-gray-300 mb-1"
+              >
                 Full Name <span className="text-[#ff006e]">*</span>
               </label>
               <input
                 type="text"
+                id="fullName"
                 name="fullName"
                 value={formData.fullName}
                 onChange={handleChange}
@@ -180,11 +281,15 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({
 
             {/* Email */}
             <div className="form-group">
-              <label className="block text-xs md:text-sm font-medium text-gray-300 mb-1">
+              <label
+                htmlFor="email"
+                className="block text-xs md:text-sm font-medium text-gray-300 mb-1"
+              >
                 Email <span className="text-[#ff006e]">*</span>
               </label>
               <input
                 type="email"
+                id="email"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
@@ -199,15 +304,20 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
               {/* Phone */}
               <div className="form-group">
-                <label className="block text-xs md:text-sm font-medium text-gray-300 mb-1">
+                <label
+                  htmlFor="phone"
+                  className="block text-xs md:text-sm font-medium text-gray-300 mb-1"
+                >
                   Phone <span className="text-[#ff006e]">*</span>
                 </label>
                 <input
                   type="tel"
+                  id="phone"
                   name="phone"
                   value={formData.phone}
                   onChange={handleChange}
                   required
+                  pattern="[0-9]{10}"
                   className="w-full px-3 py-2 bg-[#050816]/50 border border-[#00f0ff]/20 rounded-lg 
                            text-white text-sm placeholder-gray-500 focus:outline-none 
                            focus:border-[#00f0ff] focus:ring-1 focus:ring-[#00f0ff]/50 transition-all"
@@ -217,11 +327,15 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({
 
               {/* College */}
               <div className="form-group">
-                <label className="block text-xs md:text-sm font-medium text-gray-300 mb-1">
+                <label
+                  htmlFor="college"
+                  className="block text-xs md:text-sm font-medium text-gray-300 mb-1"
+                >
                   College <span className="text-[#ff006e]">*</span>
                 </label>
                 <input
                   type="text"
+                  id="college"
                   name="college"
                   value={formData.college}
                   onChange={handleChange}
@@ -237,10 +351,14 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
               {/* Year */}
               <div className="form-group">
-                <label className="block text-xs md:text-sm font-medium text-gray-300 mb-1">
+                <label
+                  htmlFor="year"
+                  className="block text-xs md:text-sm font-medium text-gray-300 mb-1"
+                >
                   Year <span className="text-[#ff006e]">*</span>
                 </label>
                 <select
+                  id="year"
                   name="year"
                   value={formData.year}
                   onChange={handleChange}
@@ -249,21 +367,35 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({
                            text-white text-sm focus:outline-none focus:border-[#00f0ff] 
                            focus:ring-1 focus:ring-[#00f0ff]/50 transition-all appearance-none"
                 >
-                  <option value="" className="bg-[#0a0e27]">Select Year</option>
-                  <option value="1st" className="bg-[#0a0e27]">1st Year</option>
-                  <option value="2nd" className="bg-[#0a0e27]">2nd Year</option>
-                  <option value="3rd" className="bg-[#0a0e27]">3rd Year</option>
-                  <option value="4th" className="bg-[#0a0e27]">4th Year</option>
+                  <option value="" className="bg-[#0a0e27]">
+                    Select Year
+                  </option>
+                  <option value="1st" className="bg-[#0a0e27]">
+                    1st Year
+                  </option>
+                  <option value="2nd" className="bg-[#0a0e27]">
+                    2nd Year
+                  </option>
+                  <option value="3rd" className="bg-[#0a0e27]">
+                    3rd Year
+                  </option>
+                  <option value="4th" className="bg-[#0a0e27]">
+                    4th Year
+                  </option>
                 </select>
               </div>
 
               {/* Team Size (if group event) */}
               {event.teamSize === 'group' && (
                 <div className="form-group">
-                  <label className="block text-xs md:text-sm font-medium text-gray-300 mb-1">
+                  <label
+                    htmlFor="teamSize"
+                    className="block text-xs md:text-sm font-medium text-gray-300 mb-1"
+                  >
                     Team Size <span className="text-[#ff006e]">*</span>
                   </label>
                   <select
+                    id="teamSize"
                     name="teamSize"
                     value={formData.teamSize}
                     onChange={handleChange}
@@ -275,7 +407,7 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({
                     {Array.from(
                       { length: (event.maxTeamSize || 5) - (event.minTeamSize || 2) + 1 },
                       (_, i) => (event.minTeamSize || 2) + i
-                    ).map(num => (
+                    ).map((num) => (
                       <option key={num} value={num} className="bg-[#0a0e27]">
                         {num} {num === 1 ? 'member' : 'members'}
                       </option>
@@ -288,11 +420,15 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({
             {/* Team Name (if group event) */}
             {event.teamSize === 'group' && (
               <div className="form-group">
-                <label className="block text-xs md:text-sm font-medium text-gray-300 mb-1">
+                <label
+                  htmlFor="teamName"
+                  className="block text-xs md:text-sm font-medium text-gray-300 mb-1"
+                >
                   Team Name <span className="text-[#ff006e]">*</span>
                 </label>
                 <input
                   type="text"
+                  id="teamName"
                   name="teamName"
                   value={formData.teamName}
                   onChange={handleChange}
@@ -308,10 +444,14 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({
             {/* Team Members (if group event) */}
             {event.teamSize === 'group' && (
               <div className="form-group">
-                <label className="block text-xs md:text-sm font-medium text-gray-300 mb-1">
+                <label
+                  htmlFor="teamMembers"
+                  className="block text-xs md:text-sm font-medium text-gray-300 mb-1"
+                >
                   Team Members <span className="text-gray-400">(including yourself)</span>
                 </label>
                 <textarea
+                  id="teamMembers"
                   name="teamMembers"
                   value={formData.teamMembers}
                   onChange={handleChange}
@@ -336,8 +476,8 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({
                 className="mt-0.5 mr-2"
               />
               <label htmlFor="terms" className="text-xs text-gray-300">
-                I agree to the terms and conditions and confirm that all provided information is accurate.
-                I understand that the entry fee is non-refundable.
+                I agree to the terms and conditions and confirm that all provided information is
+                accurate. I understand that the entry fee is non-refundable.
               </label>
             </div>
           </form>
@@ -352,19 +492,23 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({
             <button
               type="button"
               onClick={onClose}
+              disabled={isSubmitting}
               className="px-4 py-2 text-sm font-medium text-white bg-gray-800 hover:bg-gray-700 
-                       border border-gray-700 rounded-lg transition-colors w-full sm:w-auto"
+                       border border-gray-700 rounded-lg transition-colors w-full sm:w-auto
+                       disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Cancel
             </button>
             <button
               type="submit"
               onClick={handleSubmit}
+              disabled={isSubmitting}
               className="px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r 
                        from-[#ff006e] to-[#00f0ff] rounded-lg hover:shadow-lg 
-                       hover:shadow-[#ff006e]/30 transition-all duration-300 w-full sm:w-auto"
+                       hover:shadow-[#ff006e]/30 transition-all duration-300 w-full sm:w-auto
+                       disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Proceed to Payment
+              {isSubmitting ? 'Processing...' : 'Proceed to Payment'}
             </button>
           </div>
         </div>
@@ -373,4 +517,4 @@ const RegistrationModal: React.FC<RegistrationModalProps> = ({
   );
 };
 
-export default RegistrationModal;
+export default RegistrationForm;
