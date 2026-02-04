@@ -2,25 +2,8 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
-import RegistrationForm, { SubEvent, Coordinator } from './RegistrationForm';
-import { getEventIcon } from '@/lib/EventIcons';
-import * as LucideIcons from 'lucide-react';
-
-const DynamicIcon = ({
-  name,
-  size = 24,
-  className = '',
-  strokeWidth = 2
-}: {
-  name: string;
-  size?: number;
-  className?: string;
-  strokeWidth?: number;
-}) => {
-  const IconComponent = (LucideIcons as any)[name];
-  if (!IconComponent) return <span className={className}>🏆</span>;
-  return <IconComponent size={size} className={className} strokeWidth={strokeWidth} />;
-};
+import { SubEvent } from '@/lib/eventsData';
+import RegistrationForm from './RegistrationForm';
 
 interface SubEventDetailProps {
   subEvent: SubEvent;
@@ -42,33 +25,6 @@ export default function SubEventDetail({
   const isGroupEvent = subEvent.teamSize === 'group';
   const entryFee = isGroupEvent ? subEvent.entryFee.group : subEvent.entryFee.single;
 
-  // Get dynamic icon based on event name and category
-  const iconName = getEventIcon(subEvent.name, subEvent.category);
-
-  // Get color classes based on eventColor
-  const colorClasses = {
-    text:
-      eventColor === 'neon-blue'
-        ? 'text-neon-blue'
-        : eventColor === 'neon-pink'
-        ? 'text-neon-pink'
-        : eventColor === 'neon-green'
-        ? 'text-neon-green'
-        : eventColor === 'neon-purple'
-        ? 'text-neon-purple'
-        : 'text-neon-cyan',
-    from:
-      eventColor === 'neon-blue'
-        ? 'from-neon-blue'
-        : eventColor === 'neon-pink'
-        ? 'from-neon-pink'
-        : eventColor === 'neon-green'
-        ? 'from-neon-green'
-        : eventColor === 'neon-purple'
-        ? 'from-neon-purple'
-        : 'from-neon-cyan',
-  };
-
   return (
     <>
       <motion.div
@@ -79,7 +35,7 @@ export default function SubEventDetail({
         onClick={onClose}
       >
         <motion.div
-          className="relative w-full max-w-4xl my-8 glass rounded-3xl p-6 md:p-8 border-2 border-white/10 max-h-[85vh] overflow-y-auto"
+          className="relative w-full max-w-4xl my-8 glass rounded-3xl p-6 md:p-8 border-2 border-white/10"
           initial={{ scale: 0.9, y: 50 }}
           animate={{ scale: 1, y: 0 }}
           exit={{ scale: 0.9, y: 50 }}
@@ -96,12 +52,18 @@ export default function SubEventDetail({
           {/* Header */}
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-4">
-              <div className={`${colorClasses.text}`}>
-                <DynamicIcon name={iconName} size={48} strokeWidth={2} />
-              </div>
+              <span className="text-4xl">
+                {subEvent.category === 'Coding'
+                  ? '💻'
+                  : subEvent.category === 'Dance'
+                  ? '💃'
+                  : subEvent.category === 'E-Sports'
+                  ? '🎮'
+                  : '🎭'}
+              </span>
               <div>
-                <h2 className="text-3xl md:text-4xl font-black">
-                  <span className={`${colorClasses.text} glow-text`}>{subEvent.name}</span>
+                <h2 className="text-4xl font-black">
+                  <span className={`text-${eventColor} glow-text`}>{subEvent.name}</span>
                 </h2>
                 <p className="text-gray-400">{subEvent.category}</p>
               </div>
@@ -113,7 +75,7 @@ export default function SubEventDetail({
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             <div className="glass rounded-xl p-4 text-center border-2 border-white/10">
               <div className="text-2xl mb-2">💰</div>
-              <div className={`text-2xl font-bold ${colorClasses.text}`}>₹{entryFee}</div>
+              <div className={`text-2xl font-bold text-${eventColor}`}>₹{entryFee}</div>
               <div className="text-xs text-gray-400">Entry Fee</div>
             </div>
             <div className="glass rounded-xl p-4 text-center border-2 border-white/10">
@@ -142,56 +104,50 @@ export default function SubEventDetail({
             <h3 className="text-xl font-bold mb-3 flex items-center gap-2">
               <span>🏆</span> Prizes
             </h3>
-            <p className={`text-lg font-semibold ${colorClasses.text}`}>
-              {Array.isArray(subEvent.prizes) ? subEvent.prizes.join(' | ') : subEvent.prizes}
-            </p>
+            <p className={`text-lg font-semibold text-${eventColor}`}>{subEvent.prizes}</p>
           </div>
 
           {/* Rules */}
-          {subEvent.rules && subEvent.rules.length > 0 && (
-            <div className="glass rounded-xl p-6 mb-6 border border-white/10">
-              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                <span>📋</span> Rules & Guidelines
-              </h3>
-              <ul className="space-y-2">
-                {subEvent.rules.map((rule, index) => (
-                  <li key={index} className="flex items-start gap-3">
-                    <span className={`${colorClasses.text} mt-1`}>✦</span>
-                    <span className="text-gray-300">{rule}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
+          <div className="glass rounded-xl p-6 mb-6 border border-white/10">
+            <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+              <span>📋</span> Rules & Guidelines
+            </h3>
+            <ul className="space-y-2">
+              {subEvent.rules.map((rule, index) => (
+                <li key={index} className="flex items-start gap-3">
+                  <span className={`text-${eventColor} mt-1`}>✦</span>
+                  <span className="text-gray-300">{rule}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
 
           {/* Coordinators */}
-          {subEvent.coordinators && subEvent.coordinators.length > 0 && (
-            <div className="glass rounded-xl p-6 mb-6 border border-white/10">
-              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                <span>📞</span> Event Coordinators
-              </h3>
-              <div className="grid md:grid-cols-2 gap-4">
-                {subEvent.coordinators.map((coord: Coordinator, index: number) => (
-                  <div key={index} className="flex items-center gap-3">
-                    <div
-                      className={`w-10 h-10 rounded-full bg-gradient-to-br ${colorClasses.from} to-neon-purple flex items-center justify-center font-bold text-white`}
-                    >
-                      {coord.name.charAt(0)}
-                    </div>
-                    <div>
-                      <div className="font-semibold">{coord.name}</div>
-                      <a
-                        href={`tel:${coord.phone}`}
-                        className={`text-sm ${colorClasses.text} hover:underline`}
-                      >
-                        {coord.phone}
-                      </a>
-                    </div>
+          <div className="glass rounded-xl p-6 mb-6 border border-white/10">
+            <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+              <span>📞</span> Event Coordinators
+            </h3>
+            <div className="grid md:grid-cols-2 gap-4">
+              {subEvent.coordinators.map((coord, index) => (
+                <div key={index} className="flex items-center gap-3">
+                  <div
+                    className={`w-10 h-10 rounded-full bg-gradient-to-br from-${eventColor} to-neon-purple flex items-center justify-center font-bold text-white`}
+                  >
+                    {coord.name.charAt(0)}
                   </div>
-                ))}
-              </div>
+                  <div>
+                    <div className="font-semibold">{coord.name}</div>
+                    <a
+                      href={`tel:${coord.phone}`}
+                      className={`text-sm text-${eventColor} hover:underline`}
+                    >
+                      {coord.phone}
+                    </a>
+                  </div>
+                </div>
+              ))}
             </div>
-          )}
+          </div>
 
           {/* Action Buttons */}
           <div className="flex flex-col sm:flex-row gap-4">
@@ -208,7 +164,7 @@ export default function SubEventDetail({
             )}
             <motion.button
               onClick={() => setShowRegistration(true)}
-              className={`flex-1 py-4 bg-gradient-to-r ${colorClasses.from} to-neon-purple rounded-xl font-bold text-lg`}
+              className={`flex-1 py-4 bg-gradient-to-r from-${eventColor} to-neon-purple rounded-xl font-bold text-lg`}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
@@ -218,14 +174,13 @@ export default function SubEventDetail({
         </motion.div>
       </motion.div>
 
-      {/* Registration Form Modal - PASS ALL OPTIONAL PROPS */}
+      {/* Registration Form Modal */}
       <AnimatePresence>
         {showRegistration && (
           <RegistrationForm
             subEvent={subEvent}
             eventName={eventName}
             eventColor={eventColor}
-            eventCoordinator={subEvent.coordinators[0]}
             upiQrCode={upiQrCode}
             onClose={() => setShowRegistration(false)}
           />

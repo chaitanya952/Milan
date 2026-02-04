@@ -32,9 +32,9 @@ export default function Home() {
       <Hero />
 
       {/* About Section */}
-      {/* <div id="about">
+      <div id="about">
         <About />
-      </div> */}
+      </div>
 
       {/* Event Overview Section */}
       <div id="events">

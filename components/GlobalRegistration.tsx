@@ -3,7 +3,6 @@
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { AnimatePresence } from 'framer-motion';
-import { Target, Users, CircleDollarSign, Trophy, Zap, Ticket, CreditCard } from 'lucide-react';
 import RegistrationForm from './RegistrationForm';
 
 export default function GlobalRegistration() {
@@ -11,7 +10,7 @@ export default function GlobalRegistration() {
 
   return (
     <>
-      <section className="relative py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-fest-dark to-fest-darker overflow-hidden">
+      <section className="relative py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-fest-dark to-fest-darker overflow-hidden">
         {/* Background Effects */}
         <div className="absolute inset-0 opacity-10">
           <motion.div
@@ -49,9 +48,8 @@ export default function GlobalRegistration() {
             viewport={{ once: true }}
             transition={{ type: 'spring', stiffness: 200 }}
           >
-            <span className="flex items-center gap-2 text-neon-blue font-semibold text-sm tracking-widest uppercase glass px-4 py-2 rounded-full border-2 border-neon-blue/50">
-              <Target size={16} />
-              Join The Fest
+            <span className="text-neon-blue font-semibold text-sm tracking-widest uppercase glass px-4 py-2 rounded-full border-2 border-neon-blue/50">
+              🎯 Join The Fest
             </span>
           </motion.div>
 
@@ -63,7 +61,7 @@ export default function GlobalRegistration() {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <span className="text-white">Ready to Join Milan?</span>
+            <span className="glow-text gradient-text">Ready to Join Milan?</span>
           </motion.h2>
 
           {/* Description */}
@@ -88,10 +86,10 @@ export default function GlobalRegistration() {
             transition={{ duration: 0.8, delay: 0.4 }}
           >
             {[
-              { icon: Target, label: '9+ Events', color: 'neon-blue' },
-              { icon: Users, label: '5000+ Students', color: 'neon-pink' },
-              { icon: CircleDollarSign, label: '₹2L+ Prizes', color: 'neon-purple' },
-              { icon: Trophy, label: 'Certificates', color: 'neon-green' },
+              { icon: '🎯', label: '9+ Events', color: 'neon-blue' },
+              { icon: '👥', label: '5000+ Students', color: 'neon-pink' },
+              { icon: '💰', label: '₹2L+ Prizes', color: 'neon-purple' },
+              { icon: '🏆', label: 'Certificates', color: 'neon-green' },
             ].map((stat, index) => (
               <motion.div
                 key={index}
@@ -102,9 +100,7 @@ export default function GlobalRegistration() {
                 transition={{ delay: 0.5 + index * 0.1 }}
                 whileHover={{ scale: 1.05 }}
               >
-                <div className="flex justify-center mb-2">
-                  <stat.icon className={`text-${stat.color}`} size={32} />
-                </div>
+                <div className="text-3xl mb-2">{stat.icon}</div>
                 <div className={`text-lg font-bold text-${stat.color}`}>{stat.label}</div>
               </motion.div>
             ))}
@@ -155,22 +151,19 @@ export default function GlobalRegistration() {
           >
             {[
               {
-                icon: Zap,
+                icon: '⚡',
                 title: 'Instant Confirmation',
                 desc: 'Get your registration confirmed immediately',
-                color: 'text-yellow-400'
               },
               {
-                icon: Ticket,
+                icon: '🎫',
                 title: 'Digital Tickets',
                 desc: 'Receive digital passes via email',
-                color: 'text-neon-blue'
               },
               {
-                icon: CreditCard,
+                icon: '💳',
                 title: 'Secure Payment',
                 desc: 'Multiple payment options available',
-                color: 'text-neon-green'
               },
             ].map((feature, index) => (
               <motion.div
@@ -182,9 +175,7 @@ export default function GlobalRegistration() {
                 transition={{ delay: 0.9 + index * 0.1 }}
                 whileHover={{ y: -5 }}
               >
-                <div className={`flex justify-center mb-3 ${feature.color}`}>
-                  <feature.icon size={40} />
-                </div>
+                <div className="text-4xl mb-3">{feature.icon}</div>
                 <h3 className="text-lg font-bold mb-2">{feature.title}</h3>
                 <p className="text-sm text-gray-400">{feature.desc}</p>
               </motion.div>
@@ -193,10 +184,10 @@ export default function GlobalRegistration() {
         </div>
       </section>
 
-      {/* Registration Form Modal - NO PROPS NEEDED */}
+      {/* Registration Form Modal */}
       <AnimatePresence>
         {showForm && (
-          <RegistrationForm onClose={() => setShowForm(false)} />
+          <RegistrationForm isGlobal={true} onClose={() => setShowForm(false)} />
         )}
       </AnimatePresence>
     </>
