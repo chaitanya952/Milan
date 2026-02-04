@@ -187,7 +187,7 @@ export default function GlobalRegistration() {
       {/* Registration Form Modal */}
       <AnimatePresence>
         {showForm && (
-          <RegistrationForm isGlobal={true} onClose={() => setShowForm(false)} />
+          <RegistrationForm onClose={() => setShowForm(false)} />
         )}
       </AnimatePresence>
     </>
