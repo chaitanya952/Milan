@@ -57,7 +57,8 @@ export const eventsData: MainEvent[] = [
     color: 'blue-500',
     gradient: 'from-blue-500 via-cyan-500 to-teal-500',
     coverImage: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=1200&h=600&fit=crop',
-    upiQrCode: '/qr-codes/ignitron-upi.jpeg',
+    upiQrCode: '/public/qr-codes/ignitron-upi.jpeg',
+    
     subEvents: [
       {
         id: 'ignitron-entrepreneurship',
@@ -79,6 +80,7 @@ export const eventsData: MainEvent[] = [
           'Bring your bold thinking and entrepreneurial spirit',
           'All team members must be present during presentation'
         ],
+        pptUrl: '/public/downloads/IGNITRON.pptx',
         coordinators: [
            {
       "name": "G. Anusree",
@@ -108,7 +110,7 @@ export const eventsData: MainEvent[] = [
     color: 'pink-500',
     gradient: 'from-pink-500 via-rose-500 to-red-500',
     coverImage: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=1200&h=600&fit=crop',
-    upiQrCode: '/images/upi/kritansh-qr.png',
+    upiQrCode: '/public/qr-codes/Kritansh.png',
     subEvents: [
       {
         id: 'kritansh-cricket',
@@ -130,10 +132,12 @@ export const eventsData: MainEvent[] = [
           'Team jerseys recommended',
           'All equipment must be approved'
         ],
+        
         coordinators: [
           { name: 'Coordinator 1', phone: '+91 XXXXXXXXXX' },
           { name: 'Coordinator 2', phone: '+91 XXXXXXXXXX' }
-        ]
+        ],
+        pptUrl: '/public/downloads/Kritansh.pdf',
       },
       {
         id: 'kritansh-cricket-women',
@@ -168,7 +172,8 @@ export const eventsData: MainEvent[] = [
       "name": "Sri Vatsava",
       "phone": "9392067800"
     }
-        ]
+        ],
+        pptUrl: '/public/downloads/Kritansh.pdf',
       },
       {
         id: 'kritansh-futsal',
@@ -203,7 +208,8 @@ export const eventsData: MainEvent[] = [
       "name": "Sri Vatsava",
       "phone": "9392067800"
     }
-        ]
+        ],
+        pptUrl: '/public/downloads/Kritansh.pdf',
       },
       {
         id: 'kritansh-basketball',
@@ -238,7 +244,8 @@ export const eventsData: MainEvent[] = [
       "name": "Sri Vatsava",
       "phone": "9392067800"
     }
-        ]
+        ],
+        pptUrl: '/public/downloads/Kritansh.pdf',
       },
       {
         id: 'kritansh-badminton',
@@ -271,7 +278,8 @@ export const eventsData: MainEvent[] = [
       "name": "Sri Vatsava",
       "phone": "9392067800"
     }
-        ]
+        ],
+        pptUrl: '/public/downloads/Kritansh.pdf',
       },
       {
         id: 'kritansh-carrom',
@@ -304,7 +312,8 @@ export const eventsData: MainEvent[] = [
       "name": "Sri Vatsava",
       "phone": "9392067800"
     }
-        ]
+        ],
+        pptUrl: '/public/downloads/Kritansh.pdf',
       },
       {
         id: 'kritansh-chess',
@@ -337,7 +346,8 @@ export const eventsData: MainEvent[] = [
       "name": "Sri Vatsava",
       "phone": "9392067800"
     }
-        ]
+        ],
+        pptUrl: '/public/downloads/Kritansh.pdf',
       },
       {
         id: 'kritansh-bgmi',
@@ -372,7 +382,8 @@ export const eventsData: MainEvent[] = [
       "name": "Sri Vatsava",
       "phone": "9392067800"
     }
-        ]
+        ],
+        pptUrl: '/public/downloads/Kritansh.pdf',
       },
       {
         id: 'kritansh-throwball',
@@ -407,7 +418,8 @@ export const eventsData: MainEvent[] = [
       "name": "Sri Vatsava",
       "phone": "9392067800"
     }
-        ]
+        ],
+        pptUrl: '/public/downloads/Kritansh.pdf',
       },
       {
         id: 'kritansh-kabaddi',
@@ -442,7 +454,8 @@ export const eventsData: MainEvent[] = [
       "name": "Sri Vatsava",
       "phone": "9392067800"
     }
-        ]
+        ],
+        pptUrl: '/public/downloads/Kritansh.pdf',
       },
       {
         id: 'kritansh-volleyball',
@@ -477,7 +490,8 @@ export const eventsData: MainEvent[] = [
       "name": "Sri Vatsava",
       "phone": "9392067800"
     }
-        ]
+        ],
+        pptUrl: '/public/downloads/Kritansh.pdf',
       }
     ]
   },
@@ -547,9 +561,16 @@ export const eventsData: MainEvent[] = [
           'Karaoke track allowed'
         ],
         coordinators: [
-          { name: 'Coordinator 1', phone: '+91 XXXXXXXXXX' },
-          { name: 'Coordinator 2', phone: '+91 XXXXXXXXXX' }
-        ]
+         {
+      "name": "Charan",
+      "phone": "9949162851"
+    },
+    {
+      "name": "Annika",
+      "phone": "9618682968"
+    },
+        ],
+        pptUrl: '/public/downloads/Chrysalis.pptx',
       },
       {
         id: 'chrysalis-rampwalk',
@@ -578,7 +599,8 @@ export const eventsData: MainEvent[] = [
       "name": "Annika",
       "phone": "9618682968"
     },
-        ]
+        ],
+        pptUrl: '/public/downloads/Chrysalis.pptx',
       },
       {
         id: 'chrysalis-treasurehunt',
@@ -609,7 +631,8 @@ export const eventsData: MainEvent[] = [
       "name": "Annika",
       "phone": "9618682968"
     },
-        ]
+        ],
+        pptUrl: '/public/downloads/Chrysalis.pptx',
       },
       {
         id: 'chrysalis-optimops',
@@ -640,7 +663,8 @@ export const eventsData: MainEvent[] = [
       "name": "Harshitha",
       "phone": "8712143102"
     }
-        ]
+        ],
+        pptUrl: '/public/downloads/Chrysalis.pptx',
       }
     ]
   }
