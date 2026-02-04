@@ -1,465 +1,376 @@
-'use client';
+// RegistrationForm.tsx
+import React, { useState } from 'react';
+import { X } from 'lucide-react';
+import { SubEvent, Coordinator } from '@/lib/eventsData';
 
-import { motion, AnimatePresence } from 'framer-motion';
-import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { SubEvent } from '@/lib/eventsData';
-
-interface RegistrationFormProps {
-  subEvent: SubEvent;
-  eventName: string;
-  eventColor: string;
-  eventCoordinator: { name: string; phone: string };
-  upiQrCode: string;
+interface RegistrationModalProps {
+  isOpen?: boolean;
   onClose: () => void;
+  subEvent?: SubEvent;
+  eventName?: string;
+  eventColor?: string;
+  eventCoordinator?: Coordinator;
+  upiQrCode?: string;
+  // Support for direct event prop if needed
+  event?: {
+    id: string;
+    name: string;
+    entryFee: {
+      single?: number;
+      group?: number;
+    };
+    teamSize: 'single' | 'group';
+    minTeamSize?: number;
+    maxTeamSize?: number;
+    coordinator: {
+      name: string;
+      phone: string;
+    };
+  };
 }
 
-type FormData = {
-  name: string;
-  email: string;
-  phone: string;
-  college: string;
-  year: string;
-  teamName?: string;
-  teamMembers?: string;
-  upiTransactionId?: string;
-};
-
-type RegistrationStep = 'form' | 'payment' | 'success';
-
-export default function RegistrationForm({
+const RegistrationModal: React.FC<RegistrationModalProps> = ({ 
+  isOpen = true, 
+  onClose, 
   subEvent,
   eventName,
   eventColor,
   eventCoordinator,
   upiQrCode,
-  onClose,
-}: RegistrationFormProps) {
-  const [step, setStep] = useState<RegistrationStep>('form');
-  const [registrationId, setRegistrationId] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [teamMemberCount, setTeamMemberCount] = useState(subEvent.minTeamSize || 1);
+  event: directEvent
+}) => {
+  // Derive event data from various possible props
+  const event = directEvent || (subEvent ? {
+    id: subEvent.id,
+    name: subEvent.name,
+    entryFee: subEvent.entryFee,
+    teamSize: subEvent.teamSize,
+    minTeamSize: subEvent.minTeamSize,
+    maxTeamSize: subEvent.maxTeamSize,
+    coordinator: eventCoordinator || subEvent.coordinators[0] || { name: 'Coordinator', phone: '+91 00000 00000' }
+  } : {
+    id: 'general',
+    name: eventName || 'General Registration',
+    entryFee: { single: 0 },
+    teamSize: 'single' as const,
+    coordinator: eventCoordinator || { name: 'Coordinator', phone: '+91 00000 00000' }
+  });
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-  } = useForm<FormData>();
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    phone: '',
+    college: '',
+    year: '',
+    teamName: '',
+    teamSize: event.minTeamSize || 1,
+    teamMembers: ''
+  });
 
-  const isGroupEvent = subEvent.teamSize === 'group';
-  const entryFee = isGroupEvent ? subEvent.entryFee.group || 0 : subEvent.entryFee.single || 0;
-
-  // Get color classes based on eventColor
-  const colorClasses = {
-    text: eventColor === 'neon-blue' ? 'text-neon-blue' :
-          eventColor === 'neon-pink' ? 'text-neon-pink' :
-          eventColor === 'neon-green' ? 'text-neon-green' :
-          eventColor === 'neon-purple' ? 'text-neon-purple' :
-          'text-neon-cyan',
-    border: eventColor === 'neon-blue' ? 'border-neon-blue' :
-            eventColor === 'neon-pink' ? 'border-neon-pink' :
-            eventColor === 'neon-green' ? 'border-neon-green' :
-            eventColor === 'neon-purple' ? 'border-neon-purple' :
-            'border-neon-cyan',
-    from: eventColor === 'neon-blue' ? 'from-neon-blue' :
-          eventColor === 'neon-pink' ? 'from-neon-pink' :
-          eventColor === 'neon-green' ? 'from-neon-green' :
-          eventColor === 'neon-purple' ? 'from-neon-purple' :
-          'from-neon-cyan',
-  };
-
-  const onSubmitForm = async (data: FormData) => {
-    setLoading(true);
-
-    try {
-      const response = await fetch('/api/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...data,
-          eventName,
-          subEventName: subEvent.name,
-          teamSize: isGroupEvent ? `${teamMemberCount} members` : 'Individual',
-          entryFee,
-        }),
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        setRegistrationId(result.registrationId);
-        setStep('payment');
-      } else {
-        alert('Registration failed: ' + result.error);
-      }
-    } catch (error) {
-      alert('Registration error. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const onConfirmPayment = async (data: FormData) => {
-    setLoading(true);
-
-    try {
-      const response = await fetch('/api/confirm-payment', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          registrationId,
-          upiTransactionId: data.upiTransactionId,
-          paymentScreenshot: 'Uploaded via form',
-        }),
-      });
-
-      const result = await response.json();
-
-      if (result.success) {
-        setStep('success');
-      } else {
-        alert('Payment confirmation failed: ' + result.error);
-      }
-    } catch (error) {
-      alert('Payment confirmation error. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleClose = () => {
-    reset();
-    setStep('form');
-    setRegistrationId('');
-    setTeamMemberCount(subEvent.minTeamSize || 1);
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Handle registration submission
+    console.log('Registration data:', formData);
     onClose();
   };
 
-  return (
-    <motion.div
-      className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      onClick={handleClose}
-    >
-      <motion.div
-        className="relative w-full max-w-md glass rounded-2xl p-5 border-2 border-white/20 overflow-hidden"
-        initial={{ scale: 0.9, y: 50 }}
-        animate={{ scale: 1, y: 0 }}
-        exit={{ scale: 0.9, y: 50 }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        {/* Close Button */}
-        <button
-          onClick={handleClose}
-          className="absolute top-3 right-3 w-8 h-8 rounded-full glass flex items-center justify-center hover:bg-white/20 transition-all text-base z-10"
-        >
-          ✕
-        </button>
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
 
+  if (!isOpen) return null;
+
+  const entryFee = event.teamSize === 'single' 
+    ? event.entryFee.single 
+    : event.entryFee.group || event.entryFee.single;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 md:p-4 bg-black/95 backdrop-blur-sm">
+      <div className="relative w-full max-w-[700px] bg-gradient-to-br from-[#0a0e27] to-[#050816] rounded-2xl border border-[#00f0ff]/20 shadow-2xl shadow-[#00f0ff]/10">
         {/* Header */}
-        <div className="mb-4 pr-8">
-          <h2 className="text-xl font-black mb-1">
-            <span className={`${colorClasses.text} glow-text`}>{subEvent.name}</span>
-          </h2>
-          <p className="text-xs text-gray-400">{eventName} - Registration</p>
+        <div className="px-4 md:px-6 py-3 md:py-4 border-b border-[#00f0ff]/20 flex justify-between items-center">
+          <div>
+            <h2 className="text-xl md:text-2xl font-bold bg-gradient-to-r from-[#ff006e] to-[#00f0ff] bg-clip-text text-transparent">
+              {event.name} - Registration
+            </h2>
+            <p className="text-xs md:text-sm text-gray-400 mt-0.5">Fill in your details to register</p>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-1.5 rounded-lg hover:bg-[#00f0ff]/10 text-gray-400 hover:text-white transition-colors"
+          >
+            <X size={20} />
+          </button>
         </div>
 
-        <AnimatePresence mode="wait">
-          {/* Step 1: Registration Form */}
-          {step === 'form' && (
-            <motion.form
-              key="form"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              onSubmit={handleSubmit(onSubmitForm)}
-              className="space-y-4"
-            >
-              {/* Event Details */}
-              <div className="glass rounded-xl p-3 mb-4">
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <div className="text-xs text-gray-500 mb-1">Entry Fee</div>
-                    <div className={`text-lg font-bold ${colorClasses.text}`}>₹{entryFee}</div>
-                  </div>
-                  <div>
-                    <div className="text-xs text-gray-500 mb-1">Team Size</div>
-                    <div className="text-sm font-semibold">
-                      {isGroupEvent
-                        ? `${subEvent.minTeamSize}-${subEvent.maxTeamSize} members`
-                        : 'Individual'}
-                    </div>
-                  </div>
+        {/* Scrollable Content */}
+        <div className="max-h-[65vh] overflow-y-auto px-4 md:px-6 py-4">
+          {/* Event Details - Compact */}
+          <div className="mb-4 p-3 md:p-4 rounded-xl bg-[#050816]/50 border border-[#00f0ff]/10">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+              <div className="flex items-center">
+                <div className="w-6 h-6 rounded-full bg-[#ff006e]/20 flex items-center justify-center mr-2">
+                  <span className="text-xs">💰</span>
                 </div>
-                <div className="mt-2">
-                  <div className="text-xs text-gray-500 mb-1">Event Coordinator</div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm font-semibold">{eventCoordinator.name}</span>
-                    <a href={`tel:${eventCoordinator.phone}`} className={`text-sm ${colorClasses.text} hover:underline`}>
-                      {eventCoordinator.phone}
-                    </a>
-                  </div>
+                <div>
+                  <p className="text-xs text-gray-400">Entry Fee</p>
+                  <p className="text-sm font-bold text-white">₹{entryFee}</p>
                 </div>
               </div>
-
-              {/* Personal Details */}
-              <div className="space-y-3">
-                <div>
-                  <label className="block text-sm font-semibold mb-1.5">
-                    Full Name <span className="text-neon-pink">*</span>
-                  </label>
-                  <input
-                    {...register('name', { required: 'Name is required' })}
-                    className={`w-full px-3 py-2 bg-white/5 border-2 border-white/10 rounded-lg focus:border-${colorClasses.border.split('-')[1]}-${colorClasses.border.split('-')[2]} focus:outline-none text-white text-sm`}
-                    placeholder="Enter your full name"
-                  />
-                  {errors.name && (
-                    <p className="text-neon-pink text-xs mt-1">{errors.name.message}</p>
-                  )}
+              
+              <div className="flex items-center">
+                <div className="w-6 h-6 rounded-full bg-[#00f0ff]/20 flex items-center justify-center mr-2">
+                  <span className="text-xs">👥</span>
                 </div>
-
                 <div>
-                  <label className="block text-sm font-semibold mb-1.5">
-                    College <span className="text-neon-pink">*</span>
-                  </label>
-                  <input
-                    {...register('college', { required: 'College is required' })}
-                    className={`w-full px-3 py-2 bg-white/5 border-2 border-white/10 rounded-lg focus:border-${colorClasses.border.split('-')[1]}-${colorClasses.border.split('-')[2]} focus:outline-none text-white text-sm`}
-                    placeholder="Your college name"
-                  />
-                  {errors.college && (
-                    <p className="text-neon-pink text-xs mt-1">{errors.college.message}</p>
-                  )}
+                  <p className="text-xs text-gray-400">Team Size</p>
+                  <p className="text-sm font-medium text-[#00f0ff]">
+                    {event.teamSize === 'single' 
+                      ? 'Individual' 
+                      : `${event.minTeamSize || 2}-${event.maxTeamSize || 5} members`}
+                  </p>
                 </div>
-
-                <div className="grid grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-sm font-semibold mb-1.5">
-                      Email <span className="text-neon-pink">*</span>
-                    </label>
-                    <input
-                      {...register('email', {
-                        required: 'Email is required',
-                        pattern: {
-                          value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                          message: 'Invalid email',
-                        },
-                      })}
-                      type="email"
-                      className={`w-full px-3 py-2 bg-white/5 border-2 border-white/10 rounded-lg focus:border-${colorClasses.border.split('-')[1]}-${colorClasses.border.split('-')[2]} focus:outline-none text-white text-sm`}
-                      placeholder="your@email.com"
-                    />
-                    {errors.email && (
-                      <p className="text-neon-pink text-xs mt-1">{errors.email.message}</p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-semibold mb-1.5">
-                      Phone <span className="text-neon-pink">*</span>
-                    </label>
-                    <input
-                      {...register('phone', {
-                        required: 'Phone is required',
-                        pattern: {
-                          value: /^[0-9]{10}$/,
-                          message: 'Enter valid 10-digit number',
-                        },
-                      })}
-                      type="tel"
-                      className={`w-full px-3 py-2 bg-white/5 border-2 border-white/10 rounded-lg focus:border-${colorClasses.border.split('-')[1]}-${colorClasses.border.split('-')[2]} focus:outline-none text-white text-sm`}
-                      placeholder="1234567890"
-                    />
-                    {errors.phone && (
-                      <p className="text-neon-pink text-xs mt-1">{errors.phone.message}</p>
-                    )}
-                  </div>
+              </div>
+              
+              <div className="flex items-center">
+                <div className="w-6 h-6 rounded-full bg-[#8b5cf6]/20 flex items-center justify-center mr-2">
+                  <span className="text-xs">📞</span>
                 </div>
-
                 <div>
-                  <label className="block text-sm font-semibold mb-1.5">
-                    Year <span className="text-neon-pink">*</span>
-                  </label>
-                  <select
-                    {...register('year', { required: 'Year is required' })}
-                    className={`w-full px-3 py-2 bg-white/5 border-2 border-white/10 rounded-lg focus:border-${colorClasses.border.split('-')[1]}-${colorClasses.border.split('-')[2]} focus:outline-none text-white text-sm`}
+                  <p className="text-xs text-gray-400">Coordinator</p>
+                  <a 
+                    href={`tel:${event.coordinator.phone}`}
+                    className="text-sm font-medium text-[#00f0ff] hover:underline"
                   >
-                    <option value="" className="bg-gray-900">Select Year</option>
-                    <option value="1" className="bg-gray-900">1st Year</option>
-                    <option value="2" className="bg-gray-900">2nd Year</option>
-                    <option value="3" className="bg-gray-900">3rd Year</option>
-                    <option value="4" className="bg-gray-900">4th Year</option>
-                  </select>
-                  {errors.year && (
-                    <p className="text-neon-pink text-xs mt-1">{errors.year.message}</p>
-                  )}
+                    {event.coordinator.phone}
+                  </a>
                 </div>
-
-                {/* Team Details (if group event) */}
-                {isGroupEvent && (
-                  <>
-                    <div>
-                      <label className="block text-sm font-semibold mb-1.5">
-                        Team Name <span className="text-neon-pink">*</span>
-                      </label>
-                      <input
-                        {...register('teamName', {
-                          required: isGroupEvent ? 'Team name is required' : false,
-                        })}
-                        className={`w-full px-3 py-2 bg-white/5 border-2 border-white/10 rounded-lg focus:border-${colorClasses.border.split('-')[1]}-${colorClasses.border.split('-')[2]} focus:outline-none text-white text-sm`}
-                        placeholder="Enter team name"
-                      />
-                      {errors.teamName && (
-                        <p className="text-neon-pink text-xs mt-1">{errors.teamName.message}</p>
-                      )}
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-semibold mb-1.5">
-                        Number of Team Members
-                      </label>
-                      <input
-                        type="number"
-                        min={subEvent.minTeamSize}
-                        max={subEvent.maxTeamSize}
-                        value={teamMemberCount}
-                        onChange={(e) => setTeamMemberCount(parseInt(e.target.value) || subEvent.minTeamSize || 1)}
-                        className={`w-full px-3 py-2 bg-white/5 border-2 border-white/10 rounded-lg focus:border-${colorClasses.border.split('-')[1]}-${colorClasses.border.split('-')[2]} focus:outline-none text-white text-sm`}
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-sm font-semibold mb-1.5">
-                        Team Members (comma separated)
-                      </label>
-                      <textarea
-                        {...register('teamMembers')}
-                        className={`w-full px-3 py-2 bg-white/5 border-2 border-white/10 rounded-lg focus:border-${colorClasses.border.split('-')[1]}-${colorClasses.border.split('-')[2]} focus:outline-none text-white text-sm`}
-                        placeholder="Member 1, Member 2, Member 3..."
-                        rows={2}
-                      />
-                    </div>
-                  </>
-                )}
               </div>
-
-              <motion.button
-                type="submit"
-                disabled={loading}
-                className={`w-full py-3 bg-gradient-to-r ${colorClasses.from} to-neon-purple rounded-lg font-bold text-sm mt-4 disabled:opacity-50`}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                {loading ? 'Processing...' : 'Proceed to Payment →'}
-              </motion.button>
-            </motion.form>
-          )}
-
-          {/* Step 2: Payment */}
-          {step === 'payment' && (
-            <motion.div
-              key="payment"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              className="text-center"
-            >
-              <div className="mb-4">
-                <h3 className="text-lg font-bold mb-1">Complete Payment</h3>
-                <p className="text-xs text-gray-400">Registration ID: {registrationId}</p>
+            </div>
+            
+            {event.coordinator.name && (
+              <div className="text-xs text-gray-300 mt-2">
+                Coordinator: <span className="font-medium">{event.coordinator.name}</span>
               </div>
+            )}
+          </div>
 
-              <div className="bg-white rounded-xl p-4 mb-4 inline-block">
-                <img
-                  src={upiQrCode}
-                  alt="UPI QR Code"
-                  className="w-40 h-40 mx-auto"
+          {/* Registration Form */}
+          <form onSubmit={handleSubmit} className="space-y-3 md:space-y-4">
+            {/* Full Name */}
+            <div className="form-group">
+              <label className="block text-xs md:text-sm font-medium text-gray-300 mb-1">
+                Full Name <span className="text-[#ff006e]">*</span>
+              </label>
+              <input
+                type="text"
+                name="fullName"
+                value={formData.fullName}
+                onChange={handleChange}
+                required
+                className="w-full px-3 py-2 bg-[#050816]/50 border border-[#00f0ff]/20 rounded-lg 
+                         text-white text-sm placeholder-gray-500 focus:outline-none 
+                         focus:border-[#00f0ff] focus:ring-1 focus:ring-[#00f0ff]/50 transition-all"
+                placeholder="Enter your full name"
+              />
+            </div>
+
+            {/* Email */}
+            <div className="form-group">
+              <label className="block text-xs md:text-sm font-medium text-gray-300 mb-1">
+                Email <span className="text-[#ff006e]">*</span>
+              </label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                className="w-full px-3 py-2 bg-[#050816]/50 border border-[#00f0ff]/20 rounded-lg 
+                         text-white text-sm placeholder-gray-500 focus:outline-none 
+                         focus:border-[#00f0ff] focus:ring-1 focus:ring-[#00f0ff]/50 transition-all"
+                placeholder="your@email.com"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+              {/* Phone */}
+              <div className="form-group">
+                <label className="block text-xs md:text-sm font-medium text-gray-300 mb-1">
+                  Phone <span className="text-[#ff006e]">*</span>
+                </label>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={formData.phone}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-3 py-2 bg-[#050816]/50 border border-[#00f0ff]/20 rounded-lg 
+                           text-white text-sm placeholder-gray-500 focus:outline-none 
+                           focus:border-[#00f0ff] focus:ring-1 focus:ring-[#00f0ff]/50 transition-all"
+                  placeholder="9876543210"
                 />
               </div>
 
-              <div className="glass rounded-xl p-3 mb-4">
-                <div className={`text-2xl font-black ${colorClasses.text} mb-1`}>₹{entryFee}</div>
-                <p className="text-xs text-gray-400">Scan QR code to pay via UPI</p>
+              {/* College */}
+              <div className="form-group">
+                <label className="block text-xs md:text-sm font-medium text-gray-300 mb-1">
+                  College <span className="text-[#ff006e]">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="college"
+                  value={formData.college}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-3 py-2 bg-[#050816]/50 border border-[#00f0ff]/20 rounded-lg 
+                           text-white text-sm placeholder-gray-500 focus:outline-none 
+                           focus:border-[#00f0ff] focus:ring-1 focus:ring-[#00f0ff]/50 transition-all"
+                  placeholder="Your college name"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
+              {/* Year */}
+              <div className="form-group">
+                <label className="block text-xs md:text-sm font-medium text-gray-300 mb-1">
+                  Year <span className="text-[#ff006e]">*</span>
+                </label>
+                <select
+                  name="year"
+                  value={formData.year}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-3 py-2 bg-[#050816]/50 border border-[#00f0ff]/20 rounded-lg 
+                           text-white text-sm focus:outline-none focus:border-[#00f0ff] 
+                           focus:ring-1 focus:ring-[#00f0ff]/50 transition-all appearance-none"
+                >
+                  <option value="" className="bg-[#0a0e27]">Select Year</option>
+                  <option value="1st" className="bg-[#0a0e27]">1st Year</option>
+                  <option value="2nd" className="bg-[#0a0e27]">2nd Year</option>
+                  <option value="3rd" className="bg-[#0a0e27]">3rd Year</option>
+                  <option value="4th" className="bg-[#0a0e27]">4th Year</option>
+                </select>
               </div>
 
-              <form onSubmit={handleSubmit(onConfirmPayment)} className="space-y-3">
-                <div>
-                  <label className="block text-sm font-semibold mb-1.5 text-left">
-                    UPI Transaction ID <span className="text-neon-pink">*</span>
+              {/* Team Size (if group event) */}
+              {event.teamSize === 'group' && (
+                <div className="form-group">
+                  <label className="block text-xs md:text-sm font-medium text-gray-300 mb-1">
+                    Team Size <span className="text-[#ff006e]">*</span>
                   </label>
-                  <input
-                    {...register('upiTransactionId', {
-                      required: 'Transaction ID is required',
-                    })}
-                    className={`w-full px-3 py-2 bg-white/5 border-2 border-white/10 rounded-lg focus:border-${colorClasses.border.split('-')[1]}-${colorClasses.border.split('-')[2]} focus:outline-none text-white text-sm`}
-                    placeholder="Enter transaction ID"
-                  />
-                  {errors.upiTransactionId && (
-                    <p className="text-neon-pink text-xs mt-1 text-left">
-                      {errors.upiTransactionId.message}
-                    </p>
-                  )}
-                </div>
-
-                <div className="flex gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setStep('form')}
-                    className="flex-1 py-2.5 glass rounded-lg font-semibold text-sm"
+                  <select
+                    name="teamSize"
+                    value={formData.teamSize}
+                    onChange={handleChange}
+                    required
+                    className="w-full px-3 py-2 bg-[#050816]/50 border border-[#00f0ff]/20 rounded-lg 
+                             text-white text-sm focus:outline-none focus:border-[#00f0ff] 
+                             focus:ring-1 focus:ring-[#00f0ff]/50 transition-all appearance-none"
                   >
-                    ← Back
-                  </button>
-                  <motion.button
-                    type="submit"
-                    disabled={loading}
-                    className={`flex-1 py-2.5 bg-gradient-to-r ${colorClasses.from} to-neon-purple rounded-lg font-bold text-sm disabled:opacity-50`}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    {loading ? 'Confirming...' : 'Confirm Payment'}
-                  </motion.button>
+                    {Array.from(
+                      { length: (event.maxTeamSize || 5) - (event.minTeamSize || 2) + 1 },
+                      (_, i) => (event.minTeamSize || 2) + i
+                    ).map(num => (
+                      <option key={num} value={num} className="bg-[#0a0e27]">
+                        {num} {num === 1 ? 'member' : 'members'}
+                      </option>
+                    ))}
+                  </select>
                 </div>
-              </form>
-            </motion.div>
-          )}
+              )}
+            </div>
 
-          {/* Step 3: Success */}
-          {step === 'success' && (
-            <motion.div
-              key="success"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="text-center py-6"
+            {/* Team Name (if group event) */}
+            {event.teamSize === 'group' && (
+              <div className="form-group">
+                <label className="block text-xs md:text-sm font-medium text-gray-300 mb-1">
+                  Team Name <span className="text-[#ff006e]">*</span>
+                </label>
+                <input
+                  type="text"
+                  name="teamName"
+                  value={formData.teamName}
+                  onChange={handleChange}
+                  required
+                  className="w-full px-3 py-2 bg-[#050816]/50 border border-[#00f0ff]/20 rounded-lg 
+                           text-white text-sm placeholder-gray-500 focus:outline-none 
+                           focus:border-[#00f0ff] focus:ring-1 focus:ring-[#00f0ff]/50 transition-all"
+                  placeholder="Enter team name"
+                />
+              </div>
+            )}
+
+            {/* Team Members (if group event) */}
+            {event.teamSize === 'group' && (
+              <div className="form-group">
+                <label className="block text-xs md:text-sm font-medium text-gray-300 mb-1">
+                  Team Members <span className="text-gray-400">(including yourself)</span>
+                </label>
+                <textarea
+                  name="teamMembers"
+                  value={formData.teamMembers}
+                  onChange={handleChange}
+                  rows={3}
+                  className="w-full px-3 py-2 bg-[#050816]/50 border border-[#00f0ff]/20 rounded-lg 
+                           text-white text-sm placeholder-gray-500 focus:outline-none 
+                           focus:border-[#00f0ff] focus:ring-1 focus:ring-[#00f0ff]/50 transition-all resize-none"
+                  placeholder="Member 1, Member 2, Member 3..."
+                />
+                <p className="text-xs text-gray-400 mt-1">
+                  Enter team member names separated by commas
+                </p>
+              </div>
+            )}
+
+            {/* Terms and Conditions */}
+            <div className="flex items-start mt-4 p-3 rounded-lg bg-[#050816]/30 border border-[#00f0ff]/10">
+              <input
+                type="checkbox"
+                id="terms"
+                required
+                className="mt-0.5 mr-2"
+              />
+              <label htmlFor="terms" className="text-xs text-gray-300">
+                I agree to the terms and conditions and confirm that all provided information is accurate.
+                I understand that the entry fee is non-refundable.
+              </label>
+            </div>
+          </form>
+        </div>
+
+        {/* Footer */}
+        <div className="px-4 md:px-6 py-3 md:py-4 border-t border-[#00f0ff]/20 flex flex-col sm:flex-row gap-2 sm:gap-0 justify-between items-center">
+          <div className="text-xs text-gray-400">
+            Need help? Contact: <span className="text-[#00f0ff]">{event.coordinator.phone}</span>
+          </div>
+          <div className="flex gap-2 w-full sm:w-auto">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 text-sm font-medium text-white bg-gray-800 hover:bg-gray-700 
+                       border border-gray-700 rounded-lg transition-colors w-full sm:w-auto"
             >
-              <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 0.5 }}
-                className="text-6xl mb-4"
-              >
-                ✅
-              </motion.div>
-              <h3 className="text-xl font-bold text-neon-green mb-3">
-                Registration Successful!
-              </h3>
-              <p className="text-sm text-gray-400 mb-2">Registration ID: {registrationId}</p>
-              <p className="text-sm text-gray-400 mb-6">
-                Check your email for confirmation details
-              </p>
-              <motion.button
-                onClick={handleClose}
-                className="px-6 py-2.5 bg-gradient-to-r from-neon-green to-neon-blue rounded-lg font-bold text-sm"
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                Close
-              </motion.button>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.div>
-    </motion.div>
+              Cancel
+            </button>
+            <button
+              type="submit"
+              onClick={handleSubmit}
+              className="px-4 py-2 text-sm font-semibold text-white bg-gradient-to-r 
+                       from-[#ff006e] to-[#00f0ff] rounded-lg hover:shadow-lg 
+                       hover:shadow-[#ff006e]/30 transition-all duration-300 w-full sm:w-auto"
+            >
+              Proceed to Payment
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
-}
+};
+
+export default RegistrationModal;

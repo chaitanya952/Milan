@@ -196,14 +196,14 @@ export default function Hero() {
               />
             </motion.a>
 
-            <motion.a
+            {/* <motion.a
               href="#about"
               className="px-8 py-4 glass rounded-full font-semibold text-lg border-2 border-neon-blue/50 hover:border-neon-blue transition-all w-full sm:w-auto text-center"
               whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(0, 240, 255, 0.5)' }}
               whileTap={{ scale: 0.95 }}
             >
               Learn More
-            </motion.a>
+            </motion.a> */}
           </motion.div>
         </motion.div>
 
