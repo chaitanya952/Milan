@@ -513,7 +513,7 @@ export default function RegistrationForm({
               <div className="glass rounded-xl p-6 border-2 border-white/10 text-center">
                 <p className="text-sm text-gray-400 mb-2">Amount to Pay</p>
                 <p className={`text-4xl font-black text-${eventColor}`}>
-                  ₹{isFlexibleEvent ? entryFee * parseInt(formData.teamSize) : entryFee}
+                  ₹{isFlexibleEvent ? currentEntryFee * parseInt(formData.teamSize) : currentEntryFee}
                 </p>
               </div>
 
@@ -543,7 +543,7 @@ export default function RegistrationForm({
                     type="text"
                     value={formData.upiTransactionId}
                     onChange={(e) => handleInputChange('upiTransactionId', e.target.value)}
-                    className="w-full px-4 py-3 bg-white/5 border-2 border-white/10 rounded-xl focus:border-${eventColor} focus:outline-none text-white placeholder-gray-500"
+                    className={`w-full px-4 py-3 bg-white/5 border-2 border-white/10 rounded-xl focus:border-${eventColor} focus:outline-none text-white placeholder-gray-500`}
                     placeholder="Enter 12-digit UPI Transaction ID"
                   />
                   <p className="mt-2 text-sm text-gray-400">
@@ -613,7 +613,7 @@ export default function RegistrationForm({
             <div className="space-y-3 text-sm text-gray-400 mb-6">
               <p>✓ Confirmation email sent to {formData.email}</p>
               <p>✓ SMS notification sent to {formData.phone}</p>
-              {entryFee > 0 && <p>✓ Payment verified successfully</p>}
+              {currentEntryFee > 0 && <p>✓ Payment verified successfully</p>}
             </div>
 
             <motion.button
