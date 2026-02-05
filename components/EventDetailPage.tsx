@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import { getEventById, SubEvent } from '@/lib/eventsData';
 import SubEventDetail from './SubEventDetail';
+import { FileText } from 'lucide-react';
 
 interface EventDetailPageProps {
   eventId: string;
@@ -75,6 +76,26 @@ export default function EventDetailPage({ eventId, onClose }: EventDetailPagePro
               <p className="text-xl text-gray-300 max-w-3xl mx-auto leading-relaxed mb-8">
                 {event.summary}
               </p>
+
+              {event.pptUrl && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.1 }}
+                  className="mb-8"
+                >
+                  <motion.a
+                    href={event.pptUrl}
+                    download
+                    className="inline-flex items-center gap-2 px-8 py-4 glass rounded-xl font-bold text-lg border-2 border-white/20 hover:border-white/40 transition-all"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    <FileText className={`w-6 h-6 text-${event.color}`} />
+                    <span>Download {event.name} Brochure</span>
+                  </motion.a>
+                </motion.div>
+              )}
             </motion.div>
 
             {/* All Events Section */}

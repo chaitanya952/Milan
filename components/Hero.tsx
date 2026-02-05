@@ -2,7 +2,6 @@
 
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
 
 export default function Hero() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -20,8 +19,6 @@ export default function Hero() {
       {/* Background Milan Poster */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-gradient-to-br from-fest-darker/95 via-fest-dark/90 to-purple-900/95 z-10" />
-        {/* You can add background image here */}
-        {/* <Image src="/images/milan-poster.jpg" alt="Milan Poster" fill className="object-cover" /> */}
         <div className="absolute inset-0 bg-gradient-to-br from-fest-darker via-fest-dark to-purple-900" />
       </div>
 
@@ -150,15 +147,6 @@ export default function Hero() {
                 transition={{ duration: 0.3 }}
               />
             </motion.a>
-
-            {/* <motion.a
-              href="#about"
-              className="px-8 py-4 glass rounded-full font-semibold text-lg border-2 border-neon-blue/50 hover:border-neon-blue transition-all w-full sm:w-auto text-center"
-              whileHover={{ scale: 1.05, boxShadow: '0 0 30px rgba(0, 240, 255, 0.5)' }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Learn More
-            </motion.a> */}
           </motion.div>
         </motion.div>
 

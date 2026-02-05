@@ -25,6 +25,8 @@ export const eventIconMap: { [key: string]: string } = {
   'Table Tennis': 'Circle',
   'Chess': 'Crown',
   'Carrom': 'Disc',
+  'Kabaddi': 'Shield',
+  'Throwball': 'Volleyball',
   
   // Cultural - Dance Events (Chrysalis)
   'Solo Dance Battle': 'User',

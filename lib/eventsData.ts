@@ -1,7 +1,11 @@
-// Event Data Types
 export interface Coordinator {
   name: string;
   phone: string;
+}
+
+export interface EntryFee {
+  single: number;
+  group: number;
 }
 
 export interface SubEvent {
@@ -9,18 +13,14 @@ export interface SubEvent {
   name: string;
   category: string;
   description: string;
-  icon?: string;
-  teamSize: 'solo' | 'group' | 'solo/duo/group';
-  minTeamSize?: number;
-  maxTeamSize?: number;
-  entryFee: {
-    single: number;
-    group: number;
-  };
-  prizes: string | string[];
   date: string;
   time: string;
   venue: string;
+  teamSize: 'solo' | 'group' | 'solo/duo/group';
+  minTeamSize?: number;
+  maxTeamSize?: number;
+  entryFee: EntryFee;
+  prizes: string;
   rules: string[];
   coordinators: Coordinator[];
   pptUrl?: string;
@@ -30,70 +30,338 @@ export interface MainEvent {
   id: string;
   name: string;
   title: string;
+  icon: string;
+  color: string;
+  gradient: string;
   tagline: string;
   description: string;
   summary: string;
   eventDate: string;
-  icon: string;
-  color: string;
-  gradient: string;
-  coverImage: string;
   upiQrCode: string;
-  googleFormUrl?: string;
   subEvents: SubEvent[];
+  googleFormUrl?: string;
+  pptUrl?: string;
 }
 
-// Event Data
 export const eventsData: MainEvent[] = [
   {
     id: 'ignitron',
     name: 'Ignitron',
     title: 'IGNITRON',
-    tagline: 'Where Business Ideas Take the Spotlight',
-    description: 'Ignitron is a stage for bold thinkers and future entrepreneurs to bring their business ideas to life. It\'s not about slides or theory — it\'s about vision, clarity, and impact. If you have an idea that deserves to be heard, Ignitron is your moment.',
-    summary: 'Ignitron is a stage for bold thinkers and future entrepreneurs to bring their business ideas to life. It\'s not about slides or theory — it\'s about vision, clarity, and impact.',
-    eventDate: 'February 14-21, 2026',
-    icon: '💡',
-    color: 'blue-500',
-    gradient: 'from-blue-500 via-cyan-500 to-teal-500',
-    coverImage: 'https://images.unsplash.com/photo-1559136555-9303baea8ebd?w=1200&h=600&fit=crop',
-    upiQrCode: '/public/qr-codes/ignitron-upi.jpeg',
-    
+    icon: 'Rocket',
+    color: 'neon-orange',
+    gradient: 'from-neon-orange via-neon-yellow to-neon-red',
+    tagline: 'Ignite Your Entrepreneurial Spirit',
+    description: 'A premier entrepreneurship event where innovation meets opportunity',
+    summary: 'Ignitron is Milan\'s flagship entrepreneurship event, bringing together aspiring entrepreneurs, industry leaders, and investors. Showcase your business ideas, participate in pitch competitions, and network with like-minded innovators.',
+    eventDate: 'February 18, 2026',
+    upiQrCode: '/qr-codes/ignitron-upi.jpeg',
+    pptUrl: '/downloads/IGNITRON.pptx',
+    googleFormUrl: 'https://forms.google.com/ignitron',
     subEvents: [
       {
         id: 'ignitron-entrepreneurship',
         name: 'Entrepreneurship',
-        category: 'Business',
-        description: 'Present your startup idea to a panel of investors and industry experts. Showcase your vision, clarity, and impact.',
+        category: 'Academic',
+        description: 'Test your marketing acumen and strategic thinking in this challenging competition.',
+        date: 'Feb 18',
+        time: '10:00 AM - 4:00 PM',
+        venue: 'On Campus',
         teamSize: 'group',
+        minTeamSize: 2,
+        maxTeamSize: 3,
+        entryFee: {
+          single: 200,
+          group: 200
+        },
+        prizes: '50,000',
+        rules: [
+          'Team size: 2-3 members',
+          'Case study and presentation rounds',
+          'All team members must participate',
+          'Time limit will be strictly enforced',
+          'Judging based on creativity, feasibility, and presentation'
+        ],
+        coordinators: [
+          { name: 'Praneeth', phone: '7396951050' },
+          { name: 'SVS Rishitha', phone: '6305614798' },
+          { name: 'Muskan Singh', phone: '7013124225' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'chrysalis',
+    name: 'Chrysalis',
+    title: 'CHRYSALIS',
+    icon: 'Trophy',
+    color: 'neon-blue',
+    gradient: 'from-neon-blue via-blue-500 to-neon-purple',
+    tagline: 'Transform Through Competition',
+    description: 'Premier sports and academic tournament featuring multiple competitions',
+    summary: 'Chrysalis brings together the finest athletes and minds for an unforgettable extravaganza. From team sports to academic challenges, witness excellence in every domain.',
+    eventDate: 'February 18-21, 2026',
+    upiQrCode: '/qr-codes/Chrysalis.jpeg',
+    pptUrl: '/downloads/Chrysalis.pptx',
+    subEvents: [
+      // Academic Events
+      {
+        id: 'marketing-mad',
+        name: 'Marketing (MAD)',
+        category: 'Academic',
+        description: 'Test your marketing acumen and strategic thinking in this challenging competition.',
+        date: 'Feb 19',
+        time: '10:00 AM - 4:00 PM',
+        venue: 'Seminar Hall 1',
+        teamSize: 'group',
+        minTeamSize: 2,
+        maxTeamSize: 3,
+        entryFee: {
+          single: 0,
+          group: 200
+        },
+        prizes: '₹3,000',
+        rules: [
+          'Team size: 2-3 members',
+          'Club / Vertical: Marketing Club (Academic)',
+          'Case study and presentation rounds',
+          'Judging based on creativity, feasibility, and presentation'
+        ],
+        coordinators: [
+          { name: 'SVS Rishitha', phone: '6305614798' },
+          { name: 'Muskan Singh', phone: '7013124225' }
+        ]
+      },
+      {
+        id: 'operations-optimops',
+        name: 'Operations (OPTIMOPS)',
+        category: 'Academic',
+        description: 'Optimize processes and demonstrate operational excellence in this strategic challenge.',
+        date: 'Feb 19',
+        time: '10:00 AM - 4:00 PM',
+        venue: 'Seminar Hall 2',
+        teamSize: 'group',
+        minTeamSize: 2,
+        maxTeamSize: 3,
+        entryFee: {
+          single: 0,
+          group: 200
+        },
+        prizes: '₹3,000',
+        rules: [
+          'Team size: 2-3 members',
+          'Club / Vertical: Operations Club (Academic)',
+          'Operations and supply chain problem solving',
+          'Presentation and Q&A rounds'
+        ],
+        coordinators: [
+          { name: 'C. Saakshi', phone: '7989194934' },
+          { name: 'Sahithi', phone: '8688351758' }
+        ]
+      },
+      {
+        id: 'hr-humaneers',
+        name: 'HR (HUMANEER)',
+        category: 'Academic',
+        description: 'Showcase your people management and HR strategy skills in this comprehensive challenge.',
+        date: 'Feb 20',
+        time: '10:00 AM - 4:00 PM',
+        venue: 'Seminar Hall 3',
+        teamSize: 'group',
+        minTeamSize: 2,
+        maxTeamSize: 3,
+        entryFee: {
+          single: 0,
+          group: 200
+        },
+        prizes: '₹3,000',
+        rules: [
+          'Team size: 2-3 members',
+          'Club / Vertical: HR Club (Academic)',
+          'HR case study and role play',
+          'Policy formulation and presentation'
+        ],
+        coordinators: [
+          { name: 'Prachi Kushwaha', phone: '8004596042' },
+          { name: 'YDSN Sathwika', phone: '6302136641' }
+        ]
+      },
+      {
+        id: 'finance-finfunda',
+        name: 'Finance (FINFUNDA)',
+        category: 'Academic',
+        description: 'Demonstrate your financial analysis and investment strategy expertise.',
+        date: 'Feb 20',
+        time: '10:00 AM - 4:00 PM',
+        venue: 'Seminar Hall 4',
+        teamSize: 'group',
+        minTeamSize: 3,
+        maxTeamSize: 5,
+        entryFee: {
+          single: 0,
+          group: 200
+        },
+        prizes: '₹3,000',
+        rules: [
+          'Team size: 3-5 members',
+          'Club / Vertical: Finance Club (Academic)',
+          'Financial modeling and analysis',
+          'Investment pitch presentation'
+        ],
+        coordinators: [
+          { name: 'P. V. Karthikeya', phone: '7601033418' },
+          { name: 'Vaishnavi', phone: '7907343214' }
+        ]
+      },
+      // Chrysalis (Non-Academic) Events
+      {
+        id: 'singing-competition',
+        name: 'Singing Competition',
+        category: 'Music',
+        description: 'Showcase your vocal talent in solo, duo, or group performances.',
+        date: 'Feb 19',
+        time: '2:00 PM onwards',
+        venue: 'Main Stage',
+        teamSize: 'solo/duo/group',
+        minTeamSize: 1,
+        maxTeamSize: 4,
+        entryFee: {
+          single: 200,
+          group: 0
+        },
+        prizes: '₹3,000',
+        rules: [
+          'Solo / Duo / Group (up to 4 members)',
+          'Entry Fee: ₹200 per head',
+          'Club / Vertical: Chrysalis (Non-Academic)'
+        ],
+        coordinators: [
+          { name: 'Chatla Shivani', phone: '9701050561' },
+          { name: 'D. Yuktha Sai Harshitha', phone: '8074412297' }
+        ]
+      },
+      {
+        id: 'dancing-competition',
+        name: 'Dancing Competition',
+        category: 'Dance',
+        description: 'Express yourself through dance in solo or group categories.',
+        date: 'Feb 20',
+        time: '2:00 PM onwards',
+        venue: 'Main Stage',
+        teamSize: 'solo/duo/group',
+        minTeamSize: 1,
+        maxTeamSize: 8,
+        entryFee: {
+          single: 200,
+          group: 500
+        },
+        prizes: 'Solo: ₹3,000 | Group: ₹5,000',
+        rules: [
+          'Solo OR Group (3–8 members)',
+          'Entry Fee: Solo ₹200 | Group ₹500',
+          'Club / Vertical: Chrysalis (Non-Academic)'
+        ],
+        coordinators: [
+          { name: 'B. Srichand', phone: '9100326064' },
+          { name: 'Kunaparaju Lahari', phone: '7981098421' }
+        ]
+      },
+      {
+        id: 'ramp-walk',
+        name: 'Ramp Walk Competition',
+        category: 'Fashion',
+        description: 'Flaunt your style and confidence on the ramp.',
+        date: 'Feb 21',
+        time: '4:00 PM onwards',
+        venue: 'Main Stage',
+        teamSize: 'solo',
+        entryFee: {
+          single: 150,
+          group: 0
+        },
+        prizes: '₹3,000',
+        rules: [
+          'Single Participant',
+          'Entry Fee: ₹150 per head',
+          'Club / Vertical: Chrysalis (Non-Academic)'
+        ],
+        coordinators: [
+          { name: 'Meghana', phone: '9059054180' },
+          { name: 'P. Akshaya Reddy', phone: '9858288898' }
+        ]
+      },
+      {
+        id: 'painting-competition',
+        name: 'Painting Competition',
+        category: 'Art',
+        description: 'Let your creativity flow on canvas.',
+        date: 'Feb 19',
+        time: '10:00 AM onwards',
+        venue: 'Art Gallery',
+        teamSize: 'solo',
+        entryFee: {
+          single: 200,
+          group: 0
+        },
+        prizes: '₹2,000',
+        rules: [
+          'Single Participant',
+          'Entry Fee: ₹200 per head',
+          'Club / Vertical: Chrysalis (Non-Academic)'
+        ],
+        coordinators: [
+          { name: 'L. Nanditha', phone: '9032605728' },
+          { name: 'Hema Priya', phone: '7330763229' }
+        ]
+      },
+      {
+        id: 'photography-competition',
+        name: 'Photography Competition',
+        category: 'Art',
+        description: 'Capture the best moments and perspectives.',
+        date: 'Feb 18-21',
+        time: 'Throughout Fest',
+        venue: 'Campus Wide',
+        teamSize: 'solo',
+        entryFee: {
+          single: 200,
+          group: 0
+        },
+        prizes: '₹2,000',
+        rules: [
+          'Single Participant',
+          'Entry Fee: ₹200',
+          'Club / Vertical: Chrysalis (Non-Academic)'
+        ],
+        coordinators: [
+          { name: 'Vashist', phone: '63059 34905' },
+          { name: 'Deeksha', phone: '93462 54603' }
+        ]
+      },
+      {
+        id: 'treasure-hunt',
+        name: 'Treasure Hunt',
+        category: 'Adventure',
+        description: 'Solve clues and find the hidden treasure.',
+        date: 'Feb 20',
+        time: '10:00 AM onwards',
+        venue: 'Campus Wide',
+        teamSize: 'solo/duo/group',
         minTeamSize: 1,
         maxTeamSize: 5,
-        entryFee: { single: 0, group: 0 },
-        prizes: 'Prize Pool: ₹50,000',
-        date: 'Feb 14-21, 2026',
-        time: '9:00 AM',
-        venue: 'On Campus',
+        entryFee: {
+          single: 300,
+          group: 300
+        },
+        prizes: '₹3,000',
         rules: [
-          'Team size: 1-5 members',
-          'Present your business idea with vision and clarity',
-          'Focus on impact, not just slides',
-          'Bring your bold thinking and entrepreneurial spirit',
-          'All team members must be present during presentation'
+          'Individual OR Group (3–5 members)',
+          'Entry Fee: Group ₹300',
+          'Club / Vertical: Chrysalis (Non-Academic)'
         ],
-        pptUrl: '/public/downloads/IGNITRON.pptx',
         coordinators: [
-           {
-      "name": "G. Anusree",
-      "phone": "9502211025"
-    },
-    {
-      "name": "T. Sai Teja",
-      "phone": "8247507793"
-    },
-    {
-      "name": "Sri Vatsava",
-      "phone": "9392067800"
-    }
+          { name: 'Pranathi', phone: '73969 51050' },
+          { name: 'Srikanth', phone: '72072 05774' }
         ]
       }
     ]
@@ -102,584 +370,330 @@ export const eventsData: MainEvent[] = [
     id: 'kritansh',
     name: 'Kritansh',
     title: 'KRITANSH',
-    tagline: 'Unleash Your Athletic Prowess',
-    description: 'Where champions are made. Compete, conquer, and claim glory.',
-    summary: 'A high-octane sports extravaganza featuring cricket, football, basketball, athletics, and more. Battle it out on the field, showcase your skills, and bring home the trophy.',
+    icon: 'Music',
+    color: 'neon-pink',
+    gradient: 'from-neon-pink via-neon-purple to-neon-blue',
+    tagline: 'Celebrate Culture & Creativity',
+    description: 'A vibrant cultural fest showcasing talent across dance, music, coding, and gaming',
+    summary: 'Kritansh is the cultural heart of Milan, featuring diverse events from traditional performances to modern e-sports. Express yourself and compete in your passion.',
     eventDate: 'February 14-21, 2026',
-    icon: '🏆',
-    color: 'pink-500',
-    gradient: 'from-pink-500 via-rose-500 to-red-500',
-    coverImage: 'https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=1200&h=600&fit=crop',
-    upiQrCode: '/public/qr-codes/Kritansh.png',
+    upiQrCode: '/qr-codes/Kritansh.png',
+    pptUrl: '/downloads/Kritansh.pdf',
     subEvents: [
       {
-        id: 'kritansh-cricket',
-        name: 'Cricket (Men)',
+        id: 'cricket-men',
+        name: 'Cricket (MEN)',
         category: 'Sports',
-        description: 'Fast-paced cricket matches with exciting knockouts and finals.',
+        description: 'Traditional cricket tournament with group stages.',
+        date: 'Feb 14-21',
+        time: '9:00 AM onwards',
+        venue: 'Main Ground',
         teamSize: 'group',
         minTeamSize: 11,
         maxTeamSize: 15,
-        entryFee: { single: 0, group: 1000 },
-        prizes: '1st: ₹30,000 | 2nd: ₹20,000 | 3rd: ₹10,000',
-        date: 'Feb 14-21, 2026',
-        time: '9:00 AM',
-        venue: 'Sports Arena',
+        entryFee: {
+          single: 0,
+          group: 3500
+        },
+        prizes: '₹22,500',
         rules: [
-          'Team of 11-15 players',
-          'Knockout format',
-          'Standard cricket rules apply',
-          'Team jerseys recommended',
-          'All equipment must be approved'
-        ],
-        
-        coordinators: [
-          { name: 'Coordinator 1', phone: '+91 XXXXXXXXXX' },
-          { name: 'Coordinator 2', phone: '+91 XXXXXXXXXX' }
-        ],
-        pptUrl: '/public/downloads/Kritansh.pdf',
-      },
-      {
-        id: 'kritansh-cricket-women',
-        name: 'Box Cricket (Women)',
-        category: 'Sports',
-        description: 'Fast-paced box cricket tournament for women teams.',
-        teamSize: 'group',
-        minTeamSize: 8,
-        maxTeamSize: 12,
-        entryFee: { single: 0, group: 800 },
-        prizes: '1st: ₹20,000 | 2nd: ₹12,000 | 3rd: ₹8,000',
-        date: 'Feb 14-21, 2026',
-        time: '9:00 AM',
-        venue: 'Sports Arena',
-        rules: [
-          'Team of 8-12 players',
-          '6 overs per innings',
-          'Knockout format',
-          'Box cricket rules apply',
-          'Team jerseys recommended'
+          'GROUP STAGES format',
+          'White jersey is mandatory',
+          'Bring your own kits.',
+          'Standard cricket rules apply'
         ],
         coordinators: [
-           {
-      "name": "G. Anusree",
-      "phone": "9502211025"
-    },
-    {
-      "name": "T. Sai Teja",
-      "phone": "8247507793"
-    },
-    {
-      "name": "Sri Vatsava",
-      "phone": "9392067800"
-    }
-        ],
-        pptUrl: '/public/downloads/Kritansh.pdf',
-      },
-      {
-        id: 'kritansh-futsal',
-        name: 'Futsal',
-        category: 'Sports',
-        description: 'Intense futsal matches with league and knockout stages.',
-        teamSize: 'group',
-        minTeamSize: 5,
-        maxTeamSize: 8,
-        entryFee: { single: 0, group: 800 },
-        prizes: '1st: ₹25,000 | 2nd: ₹15,000 | 3rd: ₹8,000',
-        date: 'Feb 14-21, 2026',
-        time: '9:00 AM',
-        venue: 'Football Turf',
-        rules: [
-          'Team of 5-8 players',
-          'Two halves of 10 minutes each',
-          'FIFA futsal rules',
-          'Proper football boots required',
-          'Rolling substitutions allowed'
-        ],
-        coordinators: [
-           {
-      "name": "G. Anusree",
-      "phone": "9502211025"
-    },
-    {
-      "name": "T. Sai Teja",
-      "phone": "8247507793"
-    },
-    {
-      "name": "Sri Vatsava",
-      "phone": "9392067800"
-    }
-        ],
-        pptUrl: '/public/downloads/Kritansh.pdf',
-      },
-      {
-        id: 'kritansh-basketball',
-        name: 'Basketball',
-        category: 'Sports',
-        description: 'Basketball tournament with rapid-fire games.',
-        teamSize: 'group',
-        minTeamSize: 5,
-        maxTeamSize: 9,
-        entryFee: { single: 0, group: 600 },
-        prizes: '1st: ₹20,000 | 2nd: ₹12,000 | 3rd: ₹6,000',
-        date: 'Feb 14-21, 2026',
-        time: '9:00 AM',
-        venue: 'Basketball Court',
-        rules: [
-          'Team of 5-9 players',
-          'Two halves of 10 minutes each',
-          'Standard basketball rules',
-          'Own jerseys recommended',
-          'Proper basketball shoes required'
-        ],
-        coordinators: [
-           {
-      "name": "G. Anusree",
-      "phone": "9502211025"
-    },
-    {
-      "name": "T. Sai Teja",
-      "phone": "8247507793"
-    },
-    {
-      "name": "Sri Vatsava",
-      "phone": "9392067800"
-    }
-        ],
-        pptUrl: '/public/downloads/Kritansh.pdf',
-      },
-      {
-        id: 'kritansh-badminton',
-        name: 'Badminton',
-        category: 'Sports',
-        description: 'Badminton tournament with singles and doubles categories.',
-        teamSize: 'solo',
-        entryFee: { single: 300, group: 600 },
-        prizes: 'Singles: ₹8,000 | Doubles: ₹12,000',
-        date: 'Feb 14-21, 2026',
-        time: '9:00 AM',
-        venue: 'Indoor Stadium',
-        rules: [
-          'Singles: ₹300 per person',
-          'Doubles: ₹600 per team',
-          'Best of 3 games to 21 points',
-          'BWF rules apply',
-          'Own racket required'
-        ],
-        coordinators: [
-          {
-      "name": "G. Anusree",
-      "phone": "9502211025"
-    },
-    {
-      "name": "T. Sai Teja",
-      "phone": "8247507793"
-    },
-    {
-      "name": "Sri Vatsava",
-      "phone": "9392067800"
-    }
-        ],
-        pptUrl: '/public/downloads/Kritansh.pdf',
-      },
-      {
-        id: 'kritansh-carrom',
-        name: 'Carrom',
-        category: 'Indoor Sports',
-        description: 'Single format carrom tournament.',
-        teamSize: 'solo',
-        entryFee: { single: 150, group: 0 },
-        prizes: '1st: ₹5,000 | 2nd: ₹3,000 | 3rd: ₹2,000',
-        date: 'Feb 14-21, 2026',
-        time: '9:00 AM',
-        venue: 'Indoor Games Room',
-        rules: [
-          'Single player format',
-          'Standard carrom rules',
-          'Knockout tournament',
-          'Best of 3 boards',
-          'All equipment provided'
-        ],
-        coordinators: [
-          {
-      "name": "G. Anusree",
-      "phone": "9502211025"
-    },
-    {
-      "name": "T. Sai Teja",
-      "phone": "8247507793"
-    },
-    {
-      "name": "Sri Vatsava",
-      "phone": "9392067800"
-    }
-        ],
-        pptUrl: '/public/downloads/Kritansh.pdf',
-      },
-      {
-        id: 'kritansh-chess',
-        name: 'Chess',
-        category: 'Indoor Sports',
-        description: 'Strategic chess tournament.',
-        teamSize: 'solo',
-        entryFee: { single: 150, group: 0 },
-        prizes: '1st: ₹5,000 | 2nd: ₹3,000 | 3rd: ₹2,000',
-        date: 'Feb 14-21, 2026',
-        time: '9:00 AM',
-        venue: 'Indoor Games Room',
-        rules: [
-          'Individual participation',
-          'Standard FIDE rules',
-          'Time control will be announced',
-          'Bring your own clock if available',
-          'Tournament format: Swiss/Knockout'
-        ],
-        coordinators: [
-           {
-      "name": "G. Anusree",
-      "phone": "9502211025"
-    },
-    {
-      "name": "T. Sai Teja",
-      "phone": "8247507793"
-    },
-    {
-      "name": "Sri Vatsava",
-      "phone": "9392067800"
-    }
-        ],
-        pptUrl: '/public/downloads/Kritansh.pdf',
-      },
-      {
-        id: 'kritansh-bgmi',
-        name: 'BGMI',
-        category: 'E-Sports',
-        description: 'Battlegrounds Mobile India tournament.',
-        teamSize: 'group',
-        minTeamSize: 4,
-        maxTeamSize: 5,
-        entryFee: { single: 0, group: 500 },
-        prizes: '1st: ₹15,000 | 2nd: ₹10,000 | 3rd: ₹5,000',
-        date: 'Feb 14-21, 2026',
-        time: '9:00 AM',
-        venue: 'E-Sports Arena',
-        rules: [
-          'Squad format (4-5 players)',
-          'Latest BGMI version required',
-          'Own devices required',
-          'Standard BGMI tournament rules',
-          'Fair play policy strictly enforced'
-        ],
-        coordinators: [
-           {
-      "name": "G. Anusree",
-      "phone": "9502211025"
-    },
-    {
-      "name": "T. Sai Teja",
-      "phone": "8247507793"
-    },
-    {
-      "name": "Sri Vatsava",
-      "phone": "9392067800"
-    }
-        ],
-        pptUrl: '/public/downloads/Kritansh.pdf',
-      },
-      {
-        id: 'kritansh-throwball',
-        name: 'Throwball',
-        category: 'Sports',
-        description: 'Throwball tournament with team competition.',
-        teamSize: 'group',
-        minTeamSize: 7,
-        maxTeamSize: 12,
-        entryFee: { single: 0, group: 600 },
-        prizes: '1st: ₹15,000 | 2nd: ₹10,000 | 3rd: ₹5,000',
-        date: 'Feb 14-21, 2026',
-        time: '9:00 AM',
-        venue: 'Sports Ground',
-        rules: [
-          'Team of 7-12 players',
-          'Standard throwball rules',
-          'Best of 3 sets',
-          'Team jerseys recommended',
-          'All equipment provided'
-        ],
-        coordinators: [
-           {
-      "name": "G. Anusree",
-      "phone": "9502211025"
-    },
-    {
-      "name": "T. Sai Teja",
-      "phone": "8247507793"
-    },
-    {
-      "name": "Sri Vatsava",
-      "phone": "9392067800"
-    }
-        ],
-        pptUrl: '/public/downloads/Kritansh.pdf',
-      },
-      {
-        id: 'kritansh-kabaddi',
-        name: 'Kabaddi',
-        category: 'Sports',
-        description: 'Traditional kabaddi tournament.',
-        teamSize: 'group',
-        minTeamSize: 7,
-        maxTeamSize: 12,
-        entryFee: { single: 0, group: 700 },
-        prizes: '1st: ₹20,000 | 2nd: ₹12,000 | 3rd: ₹8,000',
-        date: 'Feb 14-21, 2026',
-        time: '9:00 AM',
-        venue: 'Kabaddi Court',
-        rules: [
-          'Team of 7-12 players',
-          'Standard kabaddi rules',
-          'Two halves of 20 minutes each',
-          'Team jerseys required',
-          'All safety equipment mandatory'
-        ],
-        coordinators: [
-          {
-      "name": "G. Anusree",
-      "phone": "9502211025"
-    },
-    {
-      "name": "T. Sai Teja",
-      "phone": "8247507793"
-    },
-    {
-      "name": "Sri Vatsava",
-      "phone": "9392067800"
-    }
-        ],
-        pptUrl: '/public/downloads/Kritansh.pdf',
-      },
-      {
-        id: 'kritansh-volleyball',
-        name: 'Volleyball',
-        category: 'Sports',
-        description: 'Volleyball tournament with team competition.',
-        teamSize: 'group',
-        minTeamSize: 6,
-        maxTeamSize: 12,
-        entryFee: { single: 0, group: 700 },
-        prizes: '1st: ₹20,000 | 2nd: ₹12,000 | 3rd: ₹8,000',
-        date: 'Feb 14-21, 2026',
-        time: '9:00 AM',
-        venue: 'Volleyball Court',
-        rules: [
-          'Team of 6-12 players',
-          'Standard volleyball rules',
-          'Best of 5 sets',
-          'Team jerseys recommended',
-          'All equipment provided'
-        ],
-        coordinators: [
-          {
-      "name": "G. Anusree",
-      "phone": "9502211025"
-    },
-    {
-      "name": "T. Sai Teja",
-      "phone": "8247507793"
-    },
-    {
-      "name": "Sri Vatsava",
-      "phone": "9392067800"
-    }
-        ],
-        pptUrl: '/public/downloads/Kritansh.pdf',
-      }
-    ]
-  },
-  {
-    id: 'chrysalis',
-    name: 'Chrysalis',
-    title: 'CHRYSALIS',
-    tagline: 'Metamorphosis of Talent',
-    description: 'Where art meets soul. Express, perform, and shine.',
-    summary: 'A spectacular cultural carnival celebrating dance, music, drama, fashion, and art. From classical to contemporary, witness performances that transcend boundaries and touch hearts.',
-    eventDate: 'February 14-21, 2026',
-    icon: '🎭',
-    color: 'purple-500',
-    gradient: 'from-purple-500 via-pink-500 to-rose-500',
-    coverImage: 'https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?w=1200&h=600&fit=crop',
-    upiQrCode: '/images/upi/chrysalis-qr.png',
-    subEvents: [
-      {
-        id: 'chrysalis-group-dance',
-        name: 'Group Dance',
-        category: 'Dance',
-        description: 'Synchronize, energize, and mesmerize with your dance crew.',
-        teamSize: 'group',
-        minTeamSize: 6,
-        maxTeamSize: 15,
-        entryFee: { single: 0, group: 500 },
-        prizes: '1st: ₹40,000 | 2nd: ₹25,000 | 3rd: ₹15,000',
-        date: 'Feb 14-21, 2026',
-        time: '9:00 AM',
-        venue: 'On Campus',
-        rules: [
-          'Team size: 6-15 members',
-          'Performance duration: 6-10 minutes',
-          'Any style or fusion allowed',
-          'Music track and choreography must be original',
-          'Props and costumes recommended'
-        ],
-        coordinators: [
-          {
-      "name": "Charan",
-      "phone": "9949162851"
-    },
-    {
-      "name": "Annika",
-      "phone": "9618682968"
-    },
+          { name: 'K. Kaushik', phone: '8458040099' },
+          { name: 'Lokesh Reddy', phone: '9392617621' }
         ]
       },
       {
-        id: 'chrysalis-singing',
-        name: 'Singing',
-        category: 'Music',
-        description: 'Solo, duo, or group singing competition across multiple genres.',
+        id: 'box-cricket-girls',
+        name: 'BOX CRICKET (GIRLS)',
+        category: 'Sports',
+        description: 'Exciting box cricket tournament for girls.',
+        date: 'Feb 19-20',
+        time: '10:00 AM onwards',
+        venue: 'Tennis Court',
+        teamSize: 'group',
+        minTeamSize: 8,
+        maxTeamSize: 10,
+        entryFee: {
+          single: 0,
+          group: 800
+        },
+        prizes: '₹6,000',
+        rules: [
+          'Team size: 8-10 members',
+          'Standard box cricket rules apply',
+          'Conducted from Feb 19-20th'
+        ],
+        coordinators: [
+          { name: 'Bharat Abhinay', phone: '9294007889' },
+          { name: 'Y Lahari', phone: '8341723268' }
+        ]
+      },
+      {
+        id: 'futsal',
+        name: 'Futsal',
+        category: 'Sports',
+        description: 'Fast-paced indoor football tournament.',
+        date: 'Feb 19-20',
+        time: '10:00 AM onwards',
+        venue: 'Futsal Court',
+        teamSize: 'group',
+        minTeamSize: 8,
+        maxTeamSize: 10,
+        entryFee: {
+          single: 0,
+          group: 1500
+        },
+        prizes: '₹11,000',
+        rules: [
+          'Team size: 8-10 members',
+          'Standard futsal rules apply',
+          'Conducted from Feb 19-20th'
+        ],
+        coordinators: [
+          { name: 'B. Praneet', phone: '6371740744' },
+          { name: 'Mani Sai', phone: '7799882603' }
+        ]
+      },
+      {
+        id: 'basketball-men',
+        name: 'Basket Ball (MEN)',
+        category: 'Sports',
+        description: 'Competitive basketball tournament.',
+        date: 'Feb 19-20',
+        time: '10:00 AM onwards',
+        venue: 'Basketball Court',
+        teamSize: 'group',
+        minTeamSize: 5,
+        maxTeamSize: 12,
+        entryFee: {
+          single: 0,
+          group: 1200
+        },
+        prizes: '₹15,000',
+        rules: [
+          'Team size: 5-12 members',
+          'Standard basketball rules apply',
+          'Conducted from Feb 19-20th'
+        ],
+        coordinators: [
+          { name: 'Manhith', phone: '8328011495' },
+          { name: 'Sasanka', phone: '8639435680' }
+        ]
+      },
+      {
+        id: 'badminton',
+        name: 'Badminton (Men and Women)',
+        category: 'Sports',
+        description: 'Badminton tournament for singles and doubles.',
+        date: 'Feb 19-20',
+        time: '9:00 AM onwards',
+        venue: 'Indoor Stadium',
         teamSize: 'solo/duo/group',
         minTeamSize: 1,
-        maxTeamSize: 4,
-        entryFee: { single: 200, group: 200 },
-        prizes: '1st: ₹10,000 | 2nd: ₹6,000 | 3rd: ₹4,000',
-        date: 'Feb 14-21, 2026',
-        time: '9:00 AM',
-        venue: 'On Campus',
+        maxTeamSize: 2,
+        entryFee: {
+          single: 300,
+          group: 600
+        },
+        prizes: '₹22,000',
         rules: [
-          'Solo/Duo/Group (up to 4 members)',
-          '₹200 per head',
-          'Duration: 3-5 minutes',
-          'Any language, any genre',
-          'Karaoke track allowed'
+          'Solo: ₹300 | Doubles: ₹600',
+          'No mixed in Doubles',
+          'Non marking Badminton shoes mandatory',
+          'Conducted from Feb 19-20th'
         ],
         coordinators: [
-         {
-      "name": "Charan",
-      "phone": "9949162851"
-    },
-    {
-      "name": "Annika",
-      "phone": "9618682968"
-    },
-        ],
-        pptUrl: '/public/downloads/Chrysalis.pptx',
+          { name: 'Rakesh', phone: '6304625785' },
+          { name: 'M K Vinish', phone: '9995045211' }
+        ]
       },
       {
-        id: 'chrysalis-rampwalk',
-        name: 'Ramp Walk',
-        category: 'Fashion',
-        description: 'Walk the ramp and showcase your style, confidence, and creativity.',
-        teamSize: 'solo',
-        entryFee: { single: 100, group: 0 },
-        prizes: 'Mr. & Ms. MILAN: ₹15,000 each | Runners: ₹8,000 each',
-        date: 'Feb 14-21, 2026',
-        time: '9:00 AM',
-        venue: 'On Campus',
-        rules: [
-          '₹100 per head',
-          'Individual participation',
-          'Three rounds: Introduction, Talent, Q&A',
-          'Traditional and western wear rounds',
-          'Professional grooming required'
-        ],
-        coordinators: [
-         {
-      "name": "Charan",
-      "phone": "9949162851"
-    },
-    {
-      "name": "Annika",
-      "phone": "9618682968"
-    },
-        ],
-        pptUrl: '/public/downloads/Chrysalis.pptx',
-      },
-      {
-        id: 'chrysalis-treasurehunt',
-        name: 'Treasure Hunt',
-        category: 'Adventure',
-        description: 'An exciting treasure hunt adventure across campus.',
-        teamSize: 'group',
-        minTeamSize: 3,
-        maxTeamSize: 5,
-        entryFee: { single: 0, group: 500 },
-        prizes: '1st: ₹15,000 | 2nd: ₹10,000 | 3rd: ₹5,000',
-        date: 'Feb 14-21, 2026',
-        time: '9:00 AM',
-        venue: 'On Campus',
-        rules: [
-          'Team of 3-5 members only',
-          '₹500 per team',
-          'Follow all clues and checkpoints',
-          'No use of vehicles',
-          'Complete all challenges within time limit'
-        ],
-        coordinators: [
-          {
-      "name": "Charan",
-      "phone": "9949162851"
-    },
-    {
-      "name": "Annika",
-      "phone": "9618682968"
-    },
-        ],
-        pptUrl: '/public/downloads/Chrysalis.pptx',
-      },
-      {
-        id: 'chrysalis-optimops',
-        name: 'Operations (OPTIMOPS)',
-        category: 'Business',
-        description: 'Operations management and optimization challenge.',
+        id: 'carrom',
+        name: 'Carrom',
+        category: 'Sports',
+        description: 'Classic carrom tournament in doubles format.',
+        date: 'Feb 19-20',
+        time: '10:00 AM onwards',
+        venue: 'Common Room',
         teamSize: 'group',
         minTeamSize: 2,
-        maxTeamSize: 3,
-        entryFee: { single: 0, group: 300 },
-        prizes: '1st: ₹15,000 | 2nd: ₹10,000 | 3rd: ₹5,000',
-        date: 'Feb 14-21, 2026',
-        time: '9:00 AM',
-        venue: 'On Campus',
+        maxTeamSize: 2,
+        entryFee: {
+          single: 500,
+          group: 1000
+        },
+        prizes: '₹3,000',
         rules: [
-          'Team of 2-3 members',
-          'Operations and supply chain challenges',
-          'Case study based competition',
-          'Presentation required',
-          'Time-bound problem solving'
+          'Entry fee: ₹500 per head',
+          'Double player format',
+          'Conducted from Feb 19-20th'
         ],
         coordinators: [
-           {
-      "name": "Sai Praneeth",
-      "phone": "7993931713"
-    },
-         {
-      "name": "Harshitha",
-      "phone": "8712143102"
-    }
+          { name: 'Vineet Kumar', phone: '8639620923' },
+          { name: 'R Yuktha', phone: '9848548000' }
+        ]
+      },
+      {
+        id: 'chess',
+        name: 'Chess',
+        category: 'Sports',
+        description: 'Strategic chess tournament.',
+        date: 'Feb 19-20',
+        time: '10:00 AM onwards',
+        venue: 'Seminar Hall',
+        teamSize: 'solo',
+        entryFee: {
+          single: 300,
+          group: 0
+        },
+        prizes: '₹2,500',
+        rules: [
+          'Solo participation',
+          'Standard chess rules apply',
+          'Conducted from Feb 19-20th'
         ],
-        pptUrl: '/public/downloads/Chrysalis.pptx',
+        coordinators: [
+          { name: 'Sai Ganesh', phone: '9078488091' },
+          { name: 'Tarak', phone: '9390466006' }
+        ]
+      },
+      {
+        id: 'bgmi',
+        name: 'BGMI',
+        category: 'E-Sports',
+        description: 'Battle royale squad competition.',
+        date: 'Feb 19-20',
+        time: '11:00 AM onwards',
+        venue: 'Gaming Arena',
+        teamSize: 'group',
+        minTeamSize: 4,
+        maxTeamSize: 5,
+        entryFee: {
+          single: 0,
+          group: 500
+        },
+        prizes: '₹3,000',
+        rules: [
+          'Entry fee: ₹500 Per Squad',
+          'Team size: 4-5 members',
+          'Conducted from Feb 19-20th'
+        ],
+        coordinators: [
+          { name: 'Azhar', phone: '8555846725' },
+          { name: 'Surya Kiran', phone: '9348995922' }
+        ]
+      },
+      {
+        id: 'throwball-girls',
+        name: 'Throwball (GIRLS)',
+        category: 'Sports',
+        description: 'Throwball tournament for girls.',
+        date: 'Feb 19-20',
+        time: '10:00 AM onwards',
+        venue: 'Sports Ground',
+        teamSize: 'group',
+        minTeamSize: 9,
+        maxTeamSize: 12,
+        entryFee: {
+          single: 0,
+          group: 1200
+        },
+        prizes: '₹10,000',
+        rules: [
+          'Team Size: 9-12 members',
+          'Standard throwball rules apply',
+          'Conducted from Feb 19-20th'
+        ],
+        coordinators: [
+          { name: 'V B Meera', phone: '8897697811' },
+          { name: 'D.Gnanika', phone: '6303815210' }
+        ]
+      },
+      {
+        id: 'kabaddi-mens',
+        name: 'Kabaddi (MENS)',
+        category: 'Sports',
+        description: 'Intense kabaddi tournament.',
+        date: 'Feb 18-21',
+        time: '10:00 AM onwards',
+        venue: 'Kabaddi Court',
+        teamSize: 'group',
+        minTeamSize: 7,
+        maxTeamSize: 12,
+        entryFee: {
+          single: 0,
+          group: 1000
+        },
+        prizes: '₹10,000',
+        rules: [
+          'Team size: 7-12 members',
+          'Standard kabaddi rules apply',
+          'Conducted from Feb 18-21'
+        ],
+        coordinators: [
+          { name: 'Sai Vardhan', phone: '9121754433' },
+          { name: 'Sahitya', phone: '7989664920' }
+        ]
+      },
+      {
+        id: 'volleyball-men',
+        name: 'Volleyball (MEN)',
+        category: 'Sports',
+        description: 'Exciting volleyball tournament.',
+        date: 'Feb 19-20',
+        time: '10:00 AM onwards',
+        venue: 'Volleyball Court',
+        teamSize: 'group',
+        minTeamSize: 6,
+        maxTeamSize: 12,
+        entryFee: {
+          single: 0,
+          group: 1200
+        },
+        prizes: '₹12,000',
+        rules: [
+          'Team size: 6-12 members',
+          'Best of 3 sets',
+          'Conducted from Feb 19-20th'
+        ],
+        coordinators: [
+          { name: 'Prasad', phone: '9392585742' },
+          { name: 'K. Raman', phone: '8658677344' }
+        ]
       }
     ]
   }
 ];
 
-// Helper Functions
+// Helper function to get event by ID
 export function getEventById(id: string): MainEvent | undefined {
   return eventsData.find(event => event.id === id);
 }
 
-export function getAllEvents(): MainEvent[] {
-  return eventsData;
-}
-
+// Helper function to get sub-event by ID
 export function getSubEventById(eventId: string, subEventId: string): SubEvent | undefined {
   const event = getEventById(eventId);
   return event?.subEvents.find(subEvent => subEvent.id === subEventId);
+}
+
+// Helper function to get all coordinators
+export function getAllCoordinators(): { event: string; subEvent: string; coordinators: Coordinator[] }[] {
+  const allCoordinators: { event: string; subEvent: string; coordinators: Coordinator[] }[] = [];
+  
+  eventsData.forEach(event => {
+    event.subEvents.forEach(subEvent => {
+      allCoordinators.push({
+        event: event.name,
+        subEvent: subEvent.name,
+        coordinators: subEvent.coordinators
+      });
+    });
+  });
+  
+  return allCoordinators;
 }

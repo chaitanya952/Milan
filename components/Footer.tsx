@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 export default function Footer() {
   const socialLinks = [
     { name: 'Instagram', icon: '📷', href: '#', color: 'from-pink-500 to-purple-500' },
-    { name: 'Twitter', icon: '🐦', href: '#', color: 'from-blue-400 to-cyan-400' },
+    { name: 'Twitter', icon: '🦅', href: '#', color: 'from-blue-400 to-cyan-400' },
     { name: 'YouTube', icon: '▶️', href: '#', color: 'from-red-500 to-pink-500' },
     { name: 'LinkedIn', icon: '💼', href: '#', color: 'from-blue-600 to-blue-400' },
   ];
@@ -13,8 +13,7 @@ export default function Footer() {
   const quickLinks = [
     { name: 'Events', href: '#events' },
     { name: 'Schedule', href: '#schedule' },
-    { name: 'Sponsors', href: '#sponsors' },
-    { name: 'Gallery', href: '#gallery' },
+    { name: 'About', href: '#about' },
     { name: 'Contact', href: '#contact' },
   ];
 
@@ -50,28 +49,37 @@ export default function Footer() {
               transition={{ duration: 0.6 }}
             >
               <h3 className="text-4xl font-black mb-4">
-                <span className="text-transparent bg-clip-text  from-neon-orange via-neon-pink to-neon-purple">
-                  Ready to experience Milan
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-neon-orange via-neon-pink to-neon-purple">
+                  MILAN 2026
                 </span>
               </h3>
               <p className="text-gray-400 mb-6 max-w-md leading-relaxed">
-                Vignan's most electrifying cultural and technical fest. Experience the perfect blend of 
-                creativity, innovation, and entertainment.
+                Vignan Jyothi Institute of Management's most electrifying cultural and technical fest. 
+                Experience the perfect blend of creativity, innovation, and entertainment.
               </p>
 
               {/* Contact Info */}
               <div className="space-y-3 text-sm">
-                <div className="flex items-center gap-3 text-gray-400">
-                  <span className="text-neon-blue">📍</span>
-                  <span>Vignan Institute, Hyderabad, Telangana</span>
+                <div className="flex items-start gap-3 text-gray-400">
+                  <span className="text-neon-blue mt-1">📍</span>
+                  <span>
+                    Vignana Jyothi Institute of Management (VJIM),<br />
+                    Vignana Jyothi Nagar, Bachupally,<br />
+                    Hyderabad - 500 118, Telangana, India
+                  </span>
                 </div>
                 <div className="flex items-center gap-3 text-gray-400">
                   <span className="text-neon-pink">📧</span>
-                  <span>contact@milanfest.com</span>
+                  <a href="mailto:vjim_milan@vjim.edu.in" className="hover:text-neon-pink transition-colors">
+                    vjim_milan@vjim.edu.in
+                  </a>
                 </div>
                 <div className="flex items-center gap-3 text-gray-400">
                   <span className="text-neon-green">📱</span>
-                  <span>+91 98765 43210</span>
+                  <div className="flex flex-col">
+                    <a href="tel:8498897746" className="hover:text-neon-green transition-colors">8498897746</a>
+                    <a href="tel:7893220413" className="hover:text-neon-green transition-colors">7893220413</a>
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -166,10 +174,10 @@ export default function Footer() {
           className="pt-8 border-t border-white/10"
         >
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-gray-500">
-            <div>
-              © 2026 Milan Fest, Vignan Institute. All rights reserved.
+            <div className="text-center md:text-left">
+              © 2026 Milan Fest, Vignana Jyothi Institute of Management. All rights reserved.
             </div>
-            <div className="flex gap-6">
+            <div className="flex gap-6 flex-wrap justify-center">
               <a href="#" className="hover:text-neon-blue transition-colors">
                 Privacy Policy
               </a>
@@ -180,6 +188,11 @@ export default function Footer() {
                 Code of Conduct
               </a>
             </div>
+          </div>
+          
+          {/* Attribution */}
+          <div className="text-center text-xs text-gray-600 mt-4">
+            Powered by Milan Tech Team | Designed with ❤️ for VJIM
           </div>
         </motion.div>
       </div>

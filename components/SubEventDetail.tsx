@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import { SubEvent } from '@/lib/eventsData';
 import RegistrationForm from './RegistrationForm';
+import { Calendar, Clock, MapPin, Users, Trophy, DollarSign, FileText, Phone } from 'lucide-react';
 
 interface SubEventDetailProps {
   subEvent: SubEvent;
@@ -23,7 +24,25 @@ export default function SubEventDetail({
   const [showRegistration, setShowRegistration] = useState(false);
 
   const isGroupEvent = subEvent.teamSize === 'group';
-  const entryFee = isGroupEvent ? subEvent.entryFee.group : subEvent.entryFee.single;
+  const isSoloEvent = subEvent.teamSize === 'solo';
+  const isFlexibleEvent = subEvent.teamSize === 'solo/duo/group';
+  const entryFee = isGroupEvent || isFlexibleEvent ? subEvent.entryFee.group : subEvent.entryFee.single;
+
+  // Category icon mapping
+  const getCategoryIcon = (category: string) => {
+    switch (category) {
+      case 'Coding':
+        return '💻';
+      case 'Dance':
+        return '💃';
+      case 'E-Sports':
+        return '🎮';
+      case 'Sports':
+        return '⚽';
+      default:
+        return '🎭';
+    }
+  };
 
   return (
     <>
@@ -35,7 +54,7 @@ export default function SubEventDetail({
         onClick={onClose}
       >
         <motion.div
-          className="relative w-full max-w-4xl my-8 glass rounded-3xl p-6 md:p-8 border-2 border-white/10"
+          className="relative w-full max-w-4xl my-8 glass rounded-3xl p-6 md:p-8 border-2 border-white/10 max-h-[90vh] overflow-y-auto"
           initial={{ scale: 0.9, y: 50 }}
           animate={{ scale: 1, y: 0 }}
           exit={{ scale: 0.9, y: 50 }}
@@ -44,7 +63,8 @@ export default function SubEventDetail({
           {/* Close Button */}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 w-10 h-10 rounded-full glass flex items-center justify-center hover:bg-white/20 transition-all z-10 border-2 border-white/10"
+            className="absolute top-4 right-4 w-10 h-10 rounded-full glass flex items-center justify-center hover:bg-white/20 transition-all z-10 border-2 border-white/10 sticky"
+            aria-label="Close"
           >
             ✕
           </button>
@@ -52,20 +72,19 @@ export default function SubEventDetail({
           {/* Header */}
           <div className="mb-8">
             <div className="flex items-center gap-3 mb-4">
-              <span className="text-4xl">
-                {subEvent.category === 'Coding'
-                  ? '💻'
-                  : subEvent.category === 'Dance'
-                  ? '💃'
-                  : subEvent.category === 'E-Sports'
-                  ? '🎮'
-                  : '🎭'}
+              <span className="text-5xl">
+                {getCategoryIcon(subEvent.category)}
               </span>
-              <div>
-                <h2 className="text-4xl font-black">
-                  <span className={`text-${eventColor} glow-text`}>{subEvent.name}</span>
-                </h2>
-                <p className="text-gray-400">{subEvent.category}</p>
+              <div className="flex-1">
+                <div className="flex items-center gap-3 flex-wrap mb-2">
+                  <h2 className="text-3xl md:text-4xl font-black">
+                    <span className={`text-${eventColor} glow-text`}>{subEvent.name}</span>
+                  </h2>
+                  <span className={`text-xs font-bold px-3 py-1 rounded-full bg-${eventColor}/20 text-${eventColor} border border-${eventColor}/50`}>
+                    {subEvent.category}
+                  </span>
+                </div>
+                <p className="text-gray-400 text-sm">{eventName}</p>
               </div>
             </div>
             <p className="text-lg text-gray-300 leading-relaxed">{subEvent.description}</p>
@@ -73,80 +92,154 @@ export default function SubEventDetail({
 
           {/* Key Info Cards */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-            <div className="glass rounded-xl p-4 text-center border-2 border-white/10">
-              <div className="text-2xl mb-2">💰</div>
-              <div className={`text-2xl font-bold text-${eventColor}`}>₹{entryFee}</div>
-              <div className="text-xs text-gray-400">Entry Fee</div>
+            {/* Entry Fee Card */}
+            <div className="glass rounded-xl p-4 text-center border-2 border-white/10 hover:border-white/20 transition-all">
+              <DollarSign className={`w-6 h-6 mx-auto mb-2 text-${eventColor}`} />
+              <div className={`text-2xl font-bold text-${eventColor}`}>
+                ₹{entryFee}
+                {isFlexibleEvent && '/person'}
+              </div>
+              <div className="text-xs text-gray-400 mt-1">Entry Fee</div>
             </div>
-            <div className="glass rounded-xl p-4 text-center border-2 border-white/10">
-              <div className="text-2xl mb-2">{isGroupEvent ? '👥' : '👤'}</div>
+
+            {/* Team Size Card */}
+            <div className="glass rounded-xl p-4 text-center border-2 border-white/10 hover:border-white/20 transition-all">
+              <Users className={`w-6 h-6 mx-auto mb-2 text-${eventColor}`} />
               <div className="text-xl font-bold">
-                {isGroupEvent ? `${subEvent.minTeamSize}-${subEvent.maxTeamSize}` : 'Solo'}
+                {isFlexibleEvent 
+                  ? 'Flexible' 
+                  : isGroupEvent 
+                  ? `${subEvent.minTeamSize}-${subEvent.maxTeamSize}` 
+                  : 'Solo'}
               </div>
-              <div className="text-xs text-gray-400">
-                {isGroupEvent ? 'Team Size' : 'Individual'}
+              <div className="text-xs text-gray-400 mt-1">
+                {isFlexibleEvent ? 'Solo/Duo/Group' : isGroupEvent ? 'Team Size' : 'Individual'}
               </div>
             </div>
-            <div className="glass rounded-xl p-4 text-center border-2 border-white/10">
-              <div className="text-2xl mb-2">📅</div>
+
+            {/* Date & Time Card */}
+            <div className="glass rounded-xl p-4 text-center border-2 border-white/10 hover:border-white/20 transition-all">
+              <Calendar className={`w-6 h-6 mx-auto mb-2 text-${eventColor}`} />
               <div className="text-sm font-bold">{subEvent.date}</div>
-              <div className="text-xs text-gray-400">{subEvent.time}</div>
+              <div className="text-xs text-gray-400 mt-1 flex items-center justify-center gap-1">
+                <Clock className="w-3 h-3" />
+                {subEvent.time.split(' ')[0]}
+              </div>
             </div>
-            <div className="glass rounded-xl p-4 text-center border-2 border-white/10">
-              <div className="text-2xl mb-2">📍</div>
+
+            {/* Venue Card */}
+            <div className="glass rounded-xl p-4 text-center border-2 border-white/10 hover:border-white/20 transition-all">
+              <MapPin className={`w-6 h-6 mx-auto mb-2 text-${eventColor}`} />
               <div className="text-sm font-bold">{subEvent.venue}</div>
-              <div className="text-xs text-gray-400">Venue</div>
+              <div className="text-xs text-gray-400 mt-1">Venue</div>
             </div>
           </div>
 
-          {/* Prizes */}
-          <div className="glass rounded-xl p-6 mb-6 border border-white/10">
-            <h3 className="text-xl font-bold mb-3 flex items-center gap-2">
-              <span>🏆</span> Prizes
+          {/* Prizes Section */}
+          <div className="glass rounded-xl p-6 mb-6 border border-white/10 hover:border-white/20 transition-all">
+            <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+              <Trophy className={`w-6 h-6 text-${eventColor}`} />
+              <span>Prize Pool</span>
             </h3>
             <p className={`text-lg font-semibold text-${eventColor}`}>{subEvent.prizes}</p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {subEvent.prizes.split('|').filter(p => p.trim()).map((prize, index) => {
+                const parts = prize.split(':');
+                if (parts.length < 2) {
+                  return (
+                    <span
+                      key={index}
+                      className="px-3 py-2 glass rounded-lg text-sm font-medium border border-white/10"
+                    >
+                      <span className={`text-${eventColor} font-bold`}>{prize.trim()}</span>
+                    </span>
+                  );
+                }
+                const [position, amount] = parts;
+                return (
+                  <span
+                    key={index}
+                    className="px-3 py-2 glass rounded-lg text-sm font-medium border border-white/10"
+                  >
+                    {position.trim()}: <span className={`text-${eventColor} font-bold`}>{amount.trim()}</span>
+                  </span>
+                );
+              })}
+            </div>
           </div>
 
-          {/* Rules */}
+          {/* Rules & Guidelines */}
           <div className="glass rounded-xl p-6 mb-6 border border-white/10">
             <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <span>📋</span> Rules & Guidelines
+              <FileText className={`w-6 h-6 text-${eventColor}`} />
+              <span>Rules & Guidelines</span>
             </h3>
-            <ul className="space-y-2">
+            <ul className="space-y-3">
               {subEvent.rules.map((rule, index) => (
-                <li key={index} className="flex items-start gap-3">
-                  <span className={`text-${eventColor} mt-1`}>✦</span>
-                  <span className="text-gray-300">{rule}</span>
-                </li>
+                <motion.li
+                  key={index}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: index * 0.05 }}
+                  className="flex items-start gap-3 group"
+                >
+                  <span className={`text-${eventColor} mt-1 text-lg group-hover:scale-110 transition-transform`}>
+                    ✦
+                  </span>
+                  <span className="text-gray-300 flex-1">{rule}</span>
+                </motion.li>
               ))}
             </ul>
           </div>
 
-          {/* Coordinators */}
+          {/* Event Coordinators */}
           <div className="glass rounded-xl p-6 mb-6 border border-white/10">
             <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <span>📞</span> Event Coordinators
+              <Phone className={`w-6 h-6 text-${eventColor}`} />
+              <span>Event Coordinators</span>
             </h3>
             <div className="grid md:grid-cols-2 gap-4">
               {subEvent.coordinators.map((coord, index) => (
-                <div key={index} className="flex items-center gap-3">
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: index * 0.1 }}
+                  className="flex items-center gap-3 p-3 glass rounded-xl border border-white/10 hover:border-white/20 transition-all group"
+                >
                   <div
-                    className={`w-10 h-10 rounded-full bg-gradient-to-br from-${eventColor} to-neon-purple flex items-center justify-center font-bold text-white`}
+                    className={`w-12 h-12 rounded-full bg-gradient-to-br from-${eventColor} to-neon-purple flex items-center justify-center font-bold text-white text-xl group-hover:scale-110 transition-transform`}
                   >
                     {coord.name.charAt(0)}
                   </div>
-                  <div>
-                    <div className="font-semibold">{coord.name}</div>
+                  <div className="flex-1">
+                    <div className="font-semibold text-white">{coord.name}</div>
                     <a
                       href={`tel:${coord.phone}`}
-                      className={`text-sm text-${eventColor} hover:underline`}
+                      className={`text-sm text-${eventColor} hover:underline flex items-center gap-1`}
+                      onClick={(e) => e.stopPropagation()}
                     >
+                      <Phone className="w-3 h-3" />
                       {coord.phone}
                     </a>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
+          </div>
+
+          {/* Important Notes */}
+          <div className="glass rounded-xl p-4 mb-6 border-2 border-yellow-500/30 bg-yellow-500/5">
+            <h4 className="font-bold text-yellow-400 mb-2 flex items-center gap-2">
+              <span className="text-xl">⚠️</span>
+              Important Notes
+            </h4>
+            <ul className="text-sm text-gray-300 space-y-1">
+              <li>• All participants must carry valid college ID cards</li>
+              <li>• Registration closes 2 hours before the event</li>
+              <li>• Be present at the venue 30 minutes before your slot</li>
+              <li>• Organizer decisions are final and binding</li>
+            </ul>
           </div>
 
           {/* Action Buttons */}
@@ -155,16 +248,18 @@ export default function SubEventDetail({
               <motion.a
                 href={subEvent.pptUrl}
                 download
-                className="flex-1 py-4 glass rounded-xl font-semibold text-center border-2 border-white/20 hover:border-white/40 transition-all"
+                className="flex-1 py-4 glass rounded-xl font-semibold text-center border-2 border-white/20 hover:border-white/40 transition-all flex items-center justify-center gap-2"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
+                onClick={(e) => e.stopPropagation()}
               >
-                📥 Download Event Details
+                <FileText className="w-5 h-5" />
+                Download Event Details
               </motion.a>
             )}
             <motion.button
               onClick={() => setShowRegistration(true)}
-              className={`flex-1 py-4 bg-gradient-to-r from-${eventColor} to-neon-purple rounded-xl font-bold text-lg`}
+              className={`flex-1 py-4 bg-gradient-to-r from-${eventColor} to-neon-purple rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all`}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
