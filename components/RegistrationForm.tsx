@@ -22,7 +22,7 @@ export default function RegistrationForm({
   subEvent,
   eventName,
   eventColor = 'neon-blue',
-  upiQrCode = '/images/upi-qr.png',
+  upiQrCode = '/qr-codes/default-upi.png',
   onClose,
   isGlobal = false,
 }: RegistrationFormProps) {
@@ -204,6 +204,12 @@ export default function RegistrationForm({
     setError('');
 
     try {
+      console.log('🌐 Making fetch request to /api/confirm-payment');
+      console.log('📤 Payload:', {
+        registrationId,
+        upiTransactionId: formData.upiTransactionId,
+      });
+
       const response = await fetch('/api/confirm-payment', {
         method: 'POST',
         headers: {
@@ -215,9 +221,15 @@ export default function RegistrationForm({
         }),
       });
 
+      console.log('📥 Payment response status:', response.status);
       const data = await response.json();
+      console.log('📥 Payment response data:', data);
 
       if (!response.ok) {
+        throw new Error(data.error || 'Payment confirmation failed');
+      }
+
+      if (!data.success) {
         throw new Error(data.error || 'Payment confirmation failed');
       }
 
@@ -539,17 +551,34 @@ export default function RegistrationForm({
               {/* UPI QR Code */}
               <div className="glass rounded-xl p-6 border-2 border-white/10 text-center">
                 <p className="text-lg font-bold mb-4">Scan to Pay via UPI</p>
-                <div className="relative w-64 h-64 mx-auto bg-white rounded-xl p-4">
-                  <Image
-                    src={currentUpiQrCode}
-                    alt="UPI QR Code"
-                    fill
-                    className="object-contain"
-                  />
+                <div className="relative w-64 h-64 mx-auto bg-white rounded-xl p-2 overflow-hidden">
+                  {currentUpiQrCode ? (
+                    <Image
+                      src={currentUpiQrCode}
+                      alt="UPI QR Code"
+                      fill
+                      className="object-contain p-2"
+                      unoptimized
+                      onError={(e) => {
+                        console.error('QR Code failed to load:', currentUpiQrCode);
+                        // Set a fallback or show error
+                        e.currentTarget.src = '/images/qr-placeholder.png';
+                      }}
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center h-full text-gray-500">
+                      QR Code not available
+                    </div>
+                  )}
                 </div>
                 <p className="text-sm text-gray-400 mt-4">
                   Scan this QR code using any UPI app
                 </p>
+                {currentUpiQrCode && (
+                  <p className="text-xs text-gray-500 mt-2">
+                    QR Path: {currentUpiQrCode}
+                  </p>
+                )}
               </div>
 
               {/* Transaction ID Input */}
