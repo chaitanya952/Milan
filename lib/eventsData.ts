@@ -71,8 +71,8 @@ export const eventsData: MainEvent[] = [
         minTeamSize: 2,
         maxTeamSize: 3,
         entryFee: {
-          single: 200,
-          group: 200
+          single: 1000,
+          group: 1000
         },
         prizes: '50,000',
         rules: [
@@ -83,9 +83,9 @@ export const eventsData: MainEvent[] = [
           'Judging based on creativity, feasibility, and presentation'
         ],
         coordinators: [
-          { name: 'Praneeth', phone: '7396951050' },
-          { name: 'SVS Rishitha', phone: '6305614798' },
-          { name: 'Muskan Singh', phone: '7013124225' }
+          { name: 'G. Anusree', phone: '9502211025' },
+          { name: 'T. SAI TEJA', phone: '8247507793' },
+          { name: 'SRI VATSAVA', phone: '9392067800' }
         ]
       }
     ]
@@ -370,7 +370,7 @@ export const eventsData: MainEvent[] = [
     id: 'kritansh',
     name: 'Kritansh',
     title: 'KRITANSH',
-    icon: 'Music',
+    icon: 'Sports',
     color: 'neon-pink',
     gradient: 'from-neon-pink via-neon-purple to-neon-blue',
     tagline: 'Celebrate Culture & Creativity',

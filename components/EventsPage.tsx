@@ -56,15 +56,17 @@ function EventCard({
             <span className={`text-xs font-bold px-3 py-1 rounded-full bg-${eventColor}/20 text-${eventColor} border border-${eventColor}/50`}>
               {subEvent.category}
             </span>
-            <div className={`text-${eventColor}`}>
-              <DynamicIcon name={iconName} size={24} strokeWidth={2} />
-            </div>
           </div>
 
-          {/* Title */}
-          <h3 className="text-2xl font-bold mb-3 group-hover:glow-text transition-all">
-            {subEvent.name}
-          </h3>
+          {/* Title with Icon */}
+          <div className="flex items-center gap-3 mb-3">
+            <div className={`text-${eventColor}`}>
+              <DynamicIcon name={iconName} size={28} strokeWidth={2.5} />
+            </div>
+            <h3 className="text-2xl font-bold group-hover:glow-text transition-all">
+              {subEvent.name}
+            </h3>
+          </div>
 
           {/* Description */}
           <p className="text-gray-400 mb-4 line-clamp-2 text-sm">

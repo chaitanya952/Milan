@@ -6,7 +6,10 @@ import { useEffect, useState } from 'react';
 export default function Hero() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
+  const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
+    setMounted(true);
     const handleMouseMove = (e: MouseEvent) => {
       setMousePosition({ x: e.clientX, y: e.clientY });
     };
@@ -38,7 +41,7 @@ export default function Hero() {
 
       {/* Animated Particles */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none z-10">
-        {[...Array(20)].map((_, i) => (
+        {mounted && [...Array(20)].map((_, i) => (
           <motion.div
             key={i}
             className="absolute w-2 h-2 bg-neon-blue rounded-full"

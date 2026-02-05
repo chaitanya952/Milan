@@ -4,7 +4,20 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import { getEventById, SubEvent } from '@/lib/eventsData';
 import SubEventDetail from './SubEventDetail';
-import { FileText } from 'lucide-react';
+import { FileText, Trophy } from 'lucide-react';
+import * as LucideIcons from 'lucide-react';
+import { getEventIcon } from '@/lib/EventIcons';
+
+const DynamicIcon = ({ name, size = 24, className = "", strokeWidth = 2 }: { 
+  name: string, 
+  size?: number, 
+  className?: string,
+  strokeWidth?: number 
+}) => {
+  const IconComponent = (LucideIcons as any)[name];
+  if (!IconComponent) return <Trophy size={size} className={className} strokeWidth={strokeWidth} />;
+  return <IconComponent size={size} className={className} strokeWidth={strokeWidth} />;
+};
 
 interface EventDetailPageProps {
   eventId: string;
@@ -193,20 +206,15 @@ function EventCard({
         {/* Background Gradient */}
         <div className={`absolute inset-0 bg-gradient-to-br ${eventGradient} opacity-0 group-hover:opacity-10 transition-opacity`} />
 
-        {/* Category & Team Size Badge */}
-        <div className="flex items-center justify-between mb-4 relative z-10">
-          <span className={`text-xs font-bold px-3 py-1 rounded-full bg-${eventColor}/20 text-${eventColor} border border-${eventColor}/50`}>
-            {subEvent.category}
-          </span>
+        {/* Event Name with Icon */}
+        <div className="flex items-center gap-3 mb-3">
           <span className="text-2xl">
             {isGroupEvent ? '👥' : isSoloDuoGroup ? '👤👥' : '👤'}
           </span>
+          <h3 className="text-2xl font-bold group-hover:glow-text transition-all relative z-10">
+            {subEvent.name}
+          </h3>
         </div>
-
-        {/* Event Name */}
-        <h3 className="text-2xl font-bold mb-3 group-hover:glow-text transition-all relative z-10">
-          {subEvent.name}
-        </h3>
 
         {/* Description */}
         <p className="text-gray-400 text-sm mb-4 line-clamp-2 relative z-10">

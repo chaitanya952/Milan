@@ -70,6 +70,7 @@ export default function RegistrationForm({
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
+    // Only validate required personal fields
     if (!formData.name.trim()) newErrors.name = 'Name is required';
     if (!formData.email.trim()) {
       newErrors.email = 'Email is required';
@@ -89,9 +90,7 @@ export default function RegistrationForm({
       if (!formData.selectedSubEvent) newErrors.selectedSubEvent = 'Please select a sub-event';
     }
 
-    if (isGroupEvent && !isFlexibleEvent && !formData.teamName.trim()) {
-      newErrors.teamName = 'Team name is required';
-    }
+    // No validation for team fields - they're all optional
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -99,61 +98,89 @@ export default function RegistrationForm({
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    console.log('🔵 FORM SUBMIT TRIGGERED');
 
-    if (!validateForm()) return;
+    if (!validateForm()) {
+      console.log('❌ Validation failed:', errors);
+      return;
+    }
 
+    console.log('✅ Validation passed');
     setLoading(true);
     setError('');
 
+    // Calculate fee
+    let calculatedFee = currentEntryFee;
+    if (isFlexibleEvent && formData.teamSize) {
+      const teamSize = parseInt(formData.teamSize);
+      calculatedFee = teamSize * currentEntryFee;
+    }
+
+    // Prepare payload with default values for optional fields
+    const payload = {
+      eventName: eventName || formData.selectedEvent,
+      subEventName: subEvent?.name || formData.selectedSubEvent,
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      college: formData.college,
+      year: formData.year,
+      branch: formData.branch || '',
+      teamName: formData.teamName || 'N/A',
+      teamMembers: formData.teamMembers || 'Solo',
+      teamSize: isFlexibleEvent ? formData.teamSize : (isGroupEvent ? 'Group' : 'Solo'),
+      entryFee: calculatedFee,
+    };
+
+    console.log('📤 Sending payload:', payload);
+
     try {
-      // Calculate actual entry fee based on team size for flexible events
-      let calculatedFee = currentEntryFee;
-      if (isFlexibleEvent && formData.teamSize) {
-        const teamSize = parseInt(formData.teamSize);
-        calculatedFee = teamSize * currentEntryFee;
-      }
-
-      // Prepare registration data
-      const registrationData = {
-        eventName: eventName || formData.selectedEvent,
-        subEventName: subEvent?.name || formData.selectedSubEvent,
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        college: formData.college,
-        year: formData.year,
-        branch: formData.branch,
-        teamName: formData.teamName || 'N/A',
-        teamMembers: formData.teamMembers || 'Solo',
-        teamSize: isFlexibleEvent ? formData.teamSize : (isGroupEvent ? 'Group' : 'Solo'),
-        entryFee: calculatedFee,
-      };
-
-      // Send registration request
+      console.log('🌐 Making fetch request to /api/register');
+      
       const response = await fetch('/api/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(registrationData),
+        body: JSON.stringify(payload),
       });
 
+      console.log('📥 Response received');
+      console.log('📥 Status:', response.status);
+      console.log('📥 OK:', response.ok);
+
       const data = await response.json();
+      console.log('📥 Response data:', data);
 
       if (!response.ok) {
+        throw new Error(data.error || `HTTP ${response.status}`);
+      }
+
+      if (!data.success) {
         throw new Error(data.error || 'Registration failed');
       }
 
+      if (!data.registrationId) {
+        throw new Error('No registration ID received');
+      }
+
+      console.log('✅ Registration successful!');
+      console.log('✅ Registration ID:', data.registrationId);
+
       setRegistrationId(data.registrationId);
-      
-      // If no entry fee, skip payment and go to success
+
+      // Navigate to next step
       if (calculatedFee === 0) {
+        console.log('💰 Free event - going to success');
         setStep('success');
       } else {
+        console.log('💰 Paid event (₹' + calculatedFee + ') - going to payment');
         setStep('payment');
       }
+
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Registration failed. Please try again.');
+      console.error('❌ ERROR:', err);
+      setError(err instanceof Error ? err.message : 'Registration failed');
     } finally {
       setLoading(false);
     }
@@ -161,9 +188,15 @@ export default function RegistrationForm({
 
   const handlePaymentSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    console.log('💳 Payment submit triggered');
 
     if (!formData.upiTransactionId.trim()) {
       setError('Please enter UPI Transaction ID');
+      return;
+    }
+
+    if (!registrationId) {
+      setError('Registration ID not found');
       return;
     }
 
@@ -188,8 +221,10 @@ export default function RegistrationForm({
         throw new Error(data.error || 'Payment confirmation failed');
       }
 
+      console.log('✅ Payment confirmed!');
       setStep('success');
     } catch (err) {
+      console.error('❌ Payment error:', err);
       setError(err instanceof Error ? err.message : 'Payment confirmation failed');
     } finally {
       setLoading(false);
@@ -232,11 +267,7 @@ export default function RegistrationForm({
 
         {/* Form Step */}
         {step === 'form' && (
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-          >
+          <div>
             <h2 className="text-3xl font-black mb-2">
               <span className={`text-${currentEventColor} glow-text`}>Register Now</span>
             </h2>
@@ -262,7 +293,7 @@ export default function RegistrationForm({
                         value={formData.selectedEvent}
                         onChange={(e) => {
                           handleInputChange('selectedEvent', e.target.value);
-                          handleInputChange('selectedSubEvent', ''); // Reset sub-event
+                          handleInputChange('selectedSubEvent', '');
                         }}
                         className={`w-full px-4 py-3 bg-white/5 border-2 ${
                           errors.selectedEvent ? 'border-red-500' : 'border-white/10'
@@ -393,68 +424,62 @@ export default function RegistrationForm({
                 </div>
               </div>
 
-              {/* Team Details (if group event) */}
-              {(isGroupEvent || isFlexibleEvent) && (
+              {/* Team Size Selector for flexible events */}
+              {isFlexibleEvent && (
                 <div className="space-y-4 pt-4 border-t border-white/10">
-                  <h3 className="text-lg font-bold text-white">Team Details</h3>
+                  <h3 className="text-lg font-bold text-white">Participation Type</h3>
+                  <div>
+                    <label className="block text-sm font-semibold mb-2 text-gray-300">Team Size *</label>
+                    <select
+                      value={formData.teamSize}
+                      onChange={(e) => handleInputChange('teamSize', e.target.value)}
+                      className={`w-full px-4 py-3 bg-white/5 border-2 border-white/10 rounded-xl focus:border-${currentEventColor} focus:outline-none text-white`}
+                    >
+                      <option value="1" className="bg-fest-dark">Solo (1 person)</option>
+                      <option value="2" className="bg-fest-dark">Duo (2 people)</option>
+                      {activeSubEvent && activeSubEvent.maxTeamSize && [...Array(activeSubEvent.maxTeamSize - 2)].map((_, i) => (
+                        <option key={i + 3} value={i + 3} className="bg-fest-dark">
+                          Group ({i + 3} people)
+                        </option>
+                      ))}
+                    </select>
+                    <p className="mt-1 text-sm text-gray-400">
+                      Fee: ₹{currentEntryFee} per person × {formData.teamSize} = ₹{currentEntryFee * parseInt(formData.teamSize)}
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Team Details - only show if team size > 1 */}
+              {(isGroupEvent || isFlexibleEvent) && formData.teamSize !== '1' && (
+                <div className="space-y-4 pt-4 border-t border-white/10">
+                  <h3 className="text-lg font-bold text-white">Team Details (Optional)</h3>
                   
-                  {isFlexibleEvent && (
-                    <div>
-                      <label className="block text-sm font-semibold mb-2 text-gray-300">Team Size *</label>
-                      <select
-                        value={formData.teamSize}
-                        onChange={(e) => handleInputChange('teamSize', e.target.value)}
-                        className={`w-full px-4 py-3 bg-white/5 border-2 border-white/10 rounded-xl focus:border-${currentEventColor} focus:outline-none text-white`}
-                      >
-                        <option value="1" className="bg-fest-dark">Solo (1 person)</option>
-                        <option value="2" className="bg-fest-dark">Duo (2 people)</option>
-                        {activeSubEvent && activeSubEvent.maxTeamSize && [...Array(activeSubEvent.maxTeamSize - 2)].map((_, i) => (
-                          <option key={i + 3} value={i + 3} className="bg-fest-dark">
-                            Group ({i + 3} people)
-                          </option>
-                        ))}
-                      </select>
-                      <p className="mt-1 text-sm text-gray-400">
-                        Fee: ₹{currentEntryFee} per person × {formData.teamSize} = ₹{currentEntryFee * parseInt(formData.teamSize)}
-                      </p>
-                    </div>
-                  )}
+                  <div>
+                    <label className="block text-sm font-semibold mb-2 text-gray-300">
+                      Team Name
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.teamName}
+                      onChange={(e) => handleInputChange('teamName', e.target.value)}
+                      className="w-full px-4 py-3 bg-white/5 border-2 border-white/10 rounded-xl focus:border-neon-blue focus:outline-none text-white placeholder-gray-500"
+                      placeholder="Enter your team name (optional)"
+                    />
+                  </div>
 
-                  {formData.teamSize !== '1' && (
-                    <>
-                      <div>
-                        <label className="block text-sm font-semibold mb-2 text-gray-300">
-                          Team Name {!isFlexibleEvent && '*'}
-                        </label>
-                        <input
-                          type="text"
-                          value={formData.teamName}
-                          onChange={(e) => handleInputChange('teamName', e.target.value)}
-                          className={`w-full px-4 py-3 bg-white/5 border-2 ${
-                            errors.teamName ? 'border-red-500' : 'border-white/10'
-                          } rounded-xl focus:border-${currentEventColor} focus:outline-none text-white placeholder-gray-500`}
-                          placeholder="Enter your team name"
-                        />
-                        {errors.teamName && <p className="mt-1 text-sm text-red-400">{errors.teamName}</p>}
-                      </div>
-
-                      <div>
-                        <label className="block text-sm font-semibold mb-2 text-gray-300">
-                          Team Members (comma-separated)
-                        </label>
-                        <textarea
-                          value={formData.teamMembers}
-                          onChange={(e) => handleInputChange('teamMembers', e.target.value)}
-                          className={`w-full px-4 py-3 bg-white/5 border-2 border-white/10 rounded-xl focus:border-${currentEventColor} focus:outline-none text-white placeholder-gray-500 resize-none`}
-                          rows={3}
-                          placeholder="Member 1, Member 2, Member 3..."
-                        />
-                        <p className="mt-1 text-sm text-gray-400">
-                          Enter names of all team members including yourself
-                        </p>
-                      </div>
-                    </>
-                  )}
+                  <div>
+                    <label className="block text-sm font-semibold mb-2 text-gray-300">
+                      Team Members (comma-separated)
+                    </label>
+                    <textarea
+                      value={formData.teamMembers}
+                      onChange={(e) => handleInputChange('teamMembers', e.target.value)}
+                      className="w-full px-4 py-3 bg-white/5 border-2 border-white/10 rounded-xl focus:border-neon-blue focus:outline-none text-white placeholder-gray-500 resize-none"
+                      rows={3}
+                      placeholder="Member 1, Member 2, Member 3... (optional)"
+                    />
+                  </div>
                 </div>
               )}
 
@@ -471,28 +496,22 @@ export default function RegistrationForm({
               )}
 
               {/* Submit Button */}
-              <motion.button
+              <button
                 type="submit"
                 disabled={loading}
-                className={`w-full py-4 bg-gradient-to-r from-${currentEventColor} to-neon-purple rounded-xl font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed`}
-                whileHover={{ scale: loading ? 1 : 1.02 }}
-                whileTap={{ scale: loading ? 1 : 0.98 }}
+                className={`w-full py-4 bg-gradient-to-r from-${currentEventColor} to-neon-purple rounded-xl font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed transition-transform hover:scale-[1.02] active:scale-[0.98]`}
               >
                 {loading ? 'Processing...' : currentEntryFee > 0 ? 'Proceed to Payment →' : 'Register Free →'}
-              </motion.button>
+              </button>
             </form>
-          </motion.div>
+          </div>
         )}
 
         {/* Payment Step */}
         {step === 'payment' && (
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 20 }}
-          >
+          <div>
             <h2 className="text-3xl font-black mb-2">
-              <span className={`text-${eventColor} glow-text`}>Payment</span>
+              <span className={`text-${currentEventColor} glow-text`}>Payment</span>
             </h2>
             <p className="text-gray-400 mb-6">Complete your registration by making the payment</p>
 
@@ -512,7 +531,7 @@ export default function RegistrationForm({
               {/* Payment Amount */}
               <div className="glass rounded-xl p-6 border-2 border-white/10 text-center">
                 <p className="text-sm text-gray-400 mb-2">Amount to Pay</p>
-                <p className={`text-4xl font-black text-${eventColor}`}>
+                <p className={`text-4xl font-black text-${currentEventColor}`}>
                   ₹{isFlexibleEvent ? currentEntryFee * parseInt(formData.teamSize) : currentEntryFee}
                 </p>
               </div>
@@ -522,7 +541,7 @@ export default function RegistrationForm({
                 <p className="text-lg font-bold mb-4">Scan to Pay via UPI</p>
                 <div className="relative w-64 h-64 mx-auto bg-white rounded-xl p-4">
                   <Image
-                    src={upiQrCode}
+                    src={currentUpiQrCode}
                     alt="UPI QR Code"
                     fill
                     className="object-contain"
@@ -543,7 +562,7 @@ export default function RegistrationForm({
                     type="text"
                     value={formData.upiTransactionId}
                     onChange={(e) => handleInputChange('upiTransactionId', e.target.value)}
-                    className={`w-full px-4 py-3 bg-white/5 border-2 border-white/10 rounded-xl focus:border-${eventColor} focus:outline-none text-white placeholder-gray-500`}
+                    className={`w-full px-4 py-3 bg-white/5 border-2 border-white/10 rounded-xl focus:border-${currentEventColor} focus:outline-none text-white placeholder-gray-500`}
                     placeholder="Enter 12-digit UPI Transaction ID"
                   />
                   <p className="mt-2 text-sm text-gray-400">
@@ -552,50 +571,37 @@ export default function RegistrationForm({
                 </div>
 
                 <div className="flex gap-4">
-                  <motion.button
+                  <button
                     type="button"
                     onClick={() => setStep('form')}
                     className="flex-1 py-4 glass rounded-xl font-bold border-2 border-white/20 hover:border-white/40 transition-all"
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
                   >
                     ← Back
-                  </motion.button>
-                  <motion.button
+                  </button>
+                  <button
                     type="submit"
                     disabled={loading}
-                    className={`flex-1 py-4 bg-gradient-to-r from-${eventColor} to-neon-purple rounded-xl font-bold disabled:opacity-50 disabled:cursor-not-allowed`}
-                    whileHover={{ scale: loading ? 1 : 1.02 }}
-                    whileTap={{ scale: loading ? 1 : 0.98 }}
+                    className={`flex-1 py-4 bg-gradient-to-r from-${currentEventColor} to-neon-purple rounded-xl font-bold disabled:opacity-50 disabled:cursor-not-allowed`}
                   >
                     {loading ? 'Confirming...' : 'Confirm Payment →'}
-                  </motion.button>
+                  </button>
                 </div>
               </form>
             </div>
-          </motion.div>
+          </div>
         )}
 
         {/* Success Step */}
         {step === 'success' && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="text-center py-8"
-          >
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: 'spring', stiffness: 200 }}
-              className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center"
-            >
+          <div className="text-center py-8">
+            <div className="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center">
               <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
               </svg>
-            </motion.div>
+            </div>
 
             <h2 className="text-3xl font-black mb-4">
-              <span className={`text-${eventColor} glow-text`}>Registration Successful!</span>
+              <span className={`text-${currentEventColor} glow-text`}>Registration Successful!</span>
             </h2>
             
             <p className="text-gray-400 mb-6">
@@ -616,15 +622,13 @@ export default function RegistrationForm({
               {currentEntryFee > 0 && <p>✓ Payment verified successfully</p>}
             </div>
 
-            <motion.button
+            <button
               onClick={onClose}
-              className={`w-full py-4 bg-gradient-to-r from-${eventColor} to-neon-purple rounded-xl font-bold text-lg`}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              className={`w-full py-4 bg-gradient-to-r from-${currentEventColor} to-neon-purple rounded-xl font-bold text-lg`}
             >
               Close
-            </motion.button>
-          </motion.div>
+            </button>
+          </div>
         )}
       </motion.div>
     </motion.div>
