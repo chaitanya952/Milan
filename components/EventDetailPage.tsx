@@ -190,8 +190,9 @@ function EventCard({
   onClick: () => void;
 }) {
   const isGroupEvent = subEvent.teamSize === 'group';
-  const isSoloDuoGroup = subEvent.teamSize === 'solo/duo/group';
-  const entryFee = isGroupEvent || isSoloDuoGroup ? subEvent.entryFee.group : subEvent.entryFee.single;
+  const isFlexibleEvent = subEvent.teamSize === 'solo/duo/group';
+  const showBothFees = isFlexibleEvent && subEvent.entryFee.single > 0 && subEvent.entryFee.group > 0;
+  const entryFee = isGroupEvent ? subEvent.entryFee.group : subEvent.entryFee.single;
 
   return (
     <motion.div
@@ -226,13 +227,19 @@ function EventCard({
           <div className="flex items-center justify-between text-sm">
             <span className="text-gray-500">Entry Fee</span>
             <span className={`text-lg font-bold text-${eventColor}`}>
-              ₹{entryFee}{isSoloDuoGroup && '/head'}
+              {showBothFees ? (
+                <span className="text-sm">₹{subEvent.entryFee.single} / ₹{subEvent.entryFee.group}</span>
+              ) : isFlexibleEvent ? (
+                <>₹{subEvent.entryFee.single > 0 ? subEvent.entryFee.single : subEvent.entryFee.group}<span className="text-xs ml-0.5">/head</span></>
+              ) : (
+                <>₹{entryFee}</>
+              )}
             </span>
           </div>
           <div className="flex items-center justify-between text-sm">
             <span className="text-gray-500">Team Size</span>
             <span className="font-semibold">
-              {isSoloDuoGroup 
+              {isFlexibleEvent 
                 ? 'Solo/Duo/Group' 
                 : isGroupEvent 
                 ? `${subEvent.minTeamSize}-${subEvent.maxTeamSize}` 

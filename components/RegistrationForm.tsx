@@ -63,9 +63,9 @@ export default function RegistrationForm({
   const isSoloEvent = activeSubEvent?.teamSize === 'solo';
   const isFlexibleEvent = activeSubEvent?.teamSize === 'solo/duo/group';
   
-  const currentEntryFee = isGroupEvent || isFlexibleEvent
-    ? activeSubEvent?.entryFee?.group || 0
-    : activeSubEvent?.entryFee?.single || 0;
+  const currentEntryFee = (isFlexibleEvent && formData.teamSize === '1') || isSoloEvent
+    ? activeSubEvent?.entryFee?.single || 0
+    : activeSubEvent?.entryFee?.group || 0;
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -110,11 +110,9 @@ export default function RegistrationForm({
     setError('');
 
     // Calculate fee
-    let calculatedFee = currentEntryFee;
-    if (isFlexibleEvent && formData.teamSize) {
-      const teamSize = parseInt(formData.teamSize);
-      calculatedFee = teamSize * currentEntryFee;
-    }
+    const calculatedFee = (isFlexibleEvent && formData.teamSize === '1') || isSoloEvent
+      ? activeSubEvent?.entryFee?.single || 0
+      : activeSubEvent?.entryFee?.group || 0;
 
     // Prepare payload with default values for optional fields
     const payload = {
@@ -281,7 +279,7 @@ export default function RegistrationForm({
         {step === 'form' && (
           <div>
             <h2 className="text-3xl font-black mb-2">
-              <span className={`text-${currentEventColor} glow-text`}>Register Now</span>
+              <span className={`text-${currentEventColor}`}>Register Now</span>
             </h2>
             <p className="text-gray-400 mb-6">
               {subEvent ? `${subEvent.name} - ${eventName}` : 'Milan Fest 2026'}
@@ -456,7 +454,7 @@ export default function RegistrationForm({
                       ))}
                     </select>
                     <p className="mt-1 text-sm text-gray-400">
-                      Fee: ₹{currentEntryFee} per person × {formData.teamSize} = ₹{currentEntryFee * parseInt(formData.teamSize)}
+                      Fee: ₹{currentEntryFee} {formData.teamSize === '1' ? 'per person' : 'per group'}
                     </p>
                   </div>
                 </div>
@@ -501,7 +499,7 @@ export default function RegistrationForm({
                   <div className="flex items-center justify-between">
                     <span className="text-gray-300">Entry Fee:</span>
                     <span className={`text-2xl font-bold text-${currentEventColor}`}>
-                      ₹{isFlexibleEvent ? currentEntryFee * parseInt(formData.teamSize) : currentEntryFee}
+                      ₹{currentEntryFee}
                     </span>
                   </div>
                 </div>
@@ -544,7 +542,7 @@ export default function RegistrationForm({
               <div className="glass rounded-xl p-6 border-2 border-white/10 text-center">
                 <p className="text-sm text-gray-400 mb-2">Amount to Pay</p>
                 <p className={`text-4xl font-black text-${currentEventColor}`}>
-                  ₹{isFlexibleEvent ? currentEntryFee * parseInt(formData.teamSize) : currentEntryFee}
+                  ₹{currentEntryFee}
                 </p>
               </div>
 

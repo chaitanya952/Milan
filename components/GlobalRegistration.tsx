@@ -61,7 +61,7 @@ export default function GlobalRegistration() {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <span className="glow-text text-neon-blue">Ready to Join Milan?</span>
+            <span className=" text-neon-blue">Ready to Join Milan?</span>
           </motion.h2>
 
           {/* Description */}
@@ -86,7 +86,7 @@ export default function GlobalRegistration() {
             transition={{ duration: 0.8, delay: 0.4 }}
           >
             {[
-              { icon: '🎯', label: '9+ Events', color: 'neon-blue' },
+              { icon: '🎯', label: '20+ Events', color: 'neon-blue' },
               { icon: '👥', label: '5000+ Students', color: 'neon-pink' },
               { icon: '💰', label: '₹2L+ Prizes', color: 'neon-purple' },
               { icon: '🏆', label: 'Certificates', color: 'neon-green' },

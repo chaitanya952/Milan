@@ -69,15 +69,15 @@ export const eventsData: MainEvent[] = [
         venue: 'On Campus',
         teamSize: 'group',
         minTeamSize: 2,
-        maxTeamSize: 3,
+        maxTeamSize: 5,
         entryFee: {
           single: 1000,
           group: 1000
         },
         prizes: '50,000',
         rules: [
-          'Team size: 2-3 members',
-          'Case study and presentation rounds',
+          'Team size: 2-5 members',
+          'Presentation rounds',
           'All team members must participate',
           'Time limit will be strictly enforced',
           'Judging based on creativity, feasibility, and presentation'
@@ -97,10 +97,10 @@ export const eventsData: MainEvent[] = [
     icon: 'Trophy',
     color: 'neon-blue',
     gradient: 'from-neon-blue via-blue-500 to-neon-purple',
-    tagline: 'Transform Through Competition',
+    tagline: 'Celebrate Culture & Creativity',
     description: 'Premier sports and academic tournament featuring multiple competitions',
-    summary: 'Chrysalis brings together the finest athletes and minds for an unforgettable extravaganza. From team sports to academic challenges, witness excellence in every domain.',
-    eventDate: 'February 18-21, 2026',
+    summary: 'Chrysalis is the vibrant fusion of intellect and creativity at VJIM ,where academic brilliance meets cultural expression in one unforgettable celebration. ✨',
+    eventDate: 'February 21, 2026',
     upiQrCode: '/qr-codes/Chrysalis.jpeg',
     pptUrl: '/downloads/Chrysalis.pptx',
     subEvents: [
@@ -112,7 +112,7 @@ export const eventsData: MainEvent[] = [
         description: 'Test your marketing acumen and strategic thinking in this challenging competition.',
         date: 'Feb 19',
         time: '10:00 AM - 4:00 PM',
-        venue: 'Seminar Hall 1',
+        venue: 'In Campus',
         teamSize: 'group',
         minTeamSize: 2,
         maxTeamSize: 3,
@@ -139,7 +139,7 @@ export const eventsData: MainEvent[] = [
         description: 'Optimize processes and demonstrate operational excellence in this strategic challenge.',
         date: 'Feb 19',
         time: '10:00 AM - 4:00 PM',
-        venue: 'Seminar Hall 2',
+        venue: 'In Campus',
         teamSize: 'group',
         minTeamSize: 2,
         maxTeamSize: 3,
@@ -166,7 +166,7 @@ export const eventsData: MainEvent[] = [
         description: 'Showcase your people management and HR strategy skills in this comprehensive challenge.',
         date: 'Feb 20',
         time: '10:00 AM - 4:00 PM',
-        venue: 'Seminar Hall 3',
+        venue: 'In Campus',
         teamSize: 'group',
         minTeamSize: 2,
         maxTeamSize: 3,
@@ -193,7 +193,7 @@ export const eventsData: MainEvent[] = [
         description: 'Demonstrate your financial analysis and investment strategy expertise.',
         date: 'Feb 20',
         time: '10:00 AM - 4:00 PM',
-        venue: 'Seminar Hall 4',
+        venue: 'In Campus',
         teamSize: 'group',
         minTeamSize: 3,
         maxTeamSize: 5,
@@ -221,13 +221,13 @@ export const eventsData: MainEvent[] = [
         description: 'Showcase your vocal talent in solo, duo, or group performances.',
         date: 'Feb 19',
         time: '2:00 PM onwards',
-        venue: 'Main Stage',
+        venue: 'On Campus',
         teamSize: 'solo/duo/group',
         minTeamSize: 1,
         maxTeamSize: 4,
         entryFee: {
-          single: 200,
-          group: 0
+          single: 0,
+          group: 200
         },
         prizes: '₹3,000',
         rules: [
@@ -297,7 +297,7 @@ export const eventsData: MainEvent[] = [
         description: 'Let your creativity flow on canvas.',
         date: 'Feb 19',
         time: '10:00 AM onwards',
-        venue: 'Art Gallery',
+        venue: 'In Campus',
         teamSize: 'solo',
         entryFee: {
           single: 200,
@@ -350,7 +350,7 @@ export const eventsData: MainEvent[] = [
         minTeamSize: 1,
         maxTeamSize: 5,
         entryFee: {
-          single: 300,
+          single: 100,
           group: 300
         },
         prizes: '₹3,000',
@@ -373,9 +373,9 @@ export const eventsData: MainEvent[] = [
     icon: 'Sports',
     color: 'neon-pink',
     gradient: 'from-neon-pink via-neon-purple to-neon-blue',
-    tagline: 'Celebrate Culture & Creativity',
+    tagline: 'Transform through Competition',
     description: 'A vibrant cultural fest showcasing talent across dance, music, coding, and gaming',
-    summary: 'Kritansh is the cultural heart of Milan, featuring diverse events from traditional performances to modern e-sports. Express yourself and compete in your passion.',
+    summary: 'Kritansh is the dynamic celebration of strength and sportsmanship at VJIM, where passion meets performance and champions rise through the spirit of the game. 🏆🔥',
     eventDate: 'February 14-21, 2026',
     upiQrCode: '/qr-codes/Kritansh.png',
     pptUrl: '/downloads/Kritansh.pdf',
@@ -493,7 +493,7 @@ export const eventsData: MainEvent[] = [
         date: 'Feb 19-20',
         time: '9:00 AM onwards',
         venue: 'Indoor Stadium',
-        teamSize: 'solo/duo/group',
+        teamSize: 'solo', 
         minTeamSize: 1,
         maxTeamSize: 2,
         entryFee: {
@@ -524,8 +524,8 @@ export const eventsData: MainEvent[] = [
         minTeamSize: 2,
         maxTeamSize: 2,
         entryFee: {
-          single: 500,
-          group: 1000
+          single: 0,
+          group: 500
         },
         prizes: '₹3,000',
         rules: [

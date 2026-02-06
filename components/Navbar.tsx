@@ -22,7 +22,7 @@ export default function Navbar() {
             whileHover={{ scale: 1.05 }}
           >
             <a href="/" className="text-2xl sm:text-3xl md:text-4xl font-black gradient-text">
-              MILAN
+              MILAN 8.0
             </a>
           </motion.div>
 
@@ -33,8 +33,8 @@ export default function Navbar() {
               <Image
                 src="/images/college-logo.png"
                 alt="College Logo"
-                width={600}
-                height={600}
+                width={4000}
+                height={4000}
                 priority
                 className="object-contain bg-transparent w-full h-full"
               />

@@ -159,7 +159,7 @@ subEvents: [
     rules: ['Rule 1', 'Rule 2'],
     prizes: '1st: ₹X | 2nd: ₹Y',
     teamSize: 'single', // or 'group'
-    entryFee: { single: 200 },
+    entryFee: { single: 200, group: 500 },
     coordinators: [
       { name: 'Name', phone: '+91 XXXXXXXXXX' }
     ],

@@ -96,7 +96,7 @@ export default function Hero() {
             transition={{ delay: 0.4, duration: 0.8, type: 'spring' }}
           >
             <span className="inline-block animate-glow-pulse text-transparent bg-clip-text bg-gradient-to-r from-neon-pink via-neon-purple to-neon-blue">
-              MILAN
+              MILAN 8.0
             </span>
           </motion.h1>
 
@@ -122,7 +122,7 @@ export default function Hero() {
               <div className="text-neon-blue font-bold">📅 Feb 18-21, 2026</div>
             </div>
             <div className="glass px-6 py-3 rounded-lg">
-              <div className="text-neon-pink font-bold">🎯 9+ Events</div>
+              <div className="text-neon-pink font-bold">🎯 20+ Events</div>
             </div>
             <div className="glass px-6 py-3 rounded-lg">
               <div className="text-neon-purple font-bold">💰 ₹2L+ Prizes</div>

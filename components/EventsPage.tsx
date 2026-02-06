@@ -35,6 +35,8 @@ function EventCard({
 }) {
   const [showDetail, setShowDetail] = useState(false);
   const isGroupEvent = subEvent.teamSize === 'group';
+  const isFlexibleEvent = subEvent.teamSize === 'solo/duo/group';
+  const showBothFees = isFlexibleEvent && subEvent.entryFee.single > 0 && subEvent.entryFee.group > 0;
   const entryFee = isGroupEvent ? subEvent.entryFee.group : subEvent.entryFee.single;
   
   // Get dynamic icon based on event name and category
@@ -77,12 +79,24 @@ function EventCard({
           <div className="grid grid-cols-2 gap-3 mb-4">
             <div>
               <div className="text-xs text-gray-500 mb-1">Entry Fee</div>
-              <div className={`text-lg font-bold text-${eventColor}`}>₹{entryFee}</div>
+              <div className={`text-lg font-bold text-${eventColor}`}>
+                {showBothFees ? (
+                  <span className="text-sm">₹{subEvent.entryFee.single} / ₹{subEvent.entryFee.group}</span>
+                ) : isFlexibleEvent ? (
+                  <>₹{subEvent.entryFee.single > 0 ? subEvent.entryFee.single : subEvent.entryFee.group}<span className="text-xs ml-0.5">/head</span></>
+                ) : (
+                  <>₹{entryFee}</>
+                )}
+              </div>
             </div>
             <div>
               <div className="text-xs text-gray-500 mb-1">Team Size</div>
               <div className="text-sm font-semibold">
-                {isGroupEvent ? `${subEvent.minTeamSize}-${subEvent.maxTeamSize}` : 'Solo'}
+                {isFlexibleEvent 
+                  ? 'Solo/Duo/Group' 
+                  : isGroupEvent 
+                  ? `${subEvent.minTeamSize}-${subEvent.maxTeamSize}` 
+                  : 'Solo'}
               </div>
             </div>
           </div>

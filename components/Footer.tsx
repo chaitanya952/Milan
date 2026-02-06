@@ -54,7 +54,7 @@ export default function Footer() {
                 </span>
               </h3>
               <p className="text-gray-400 mb-6 max-w-md leading-relaxed">
-                Vignan Jyothi Institute of Management's most electrifying cultural and technical fest. 
+                Vignana Jyothi Institute of Management's most electrifying cultural and technical fest. 
                 Experience the perfect blend of creativity, innovation, and entertainment.
               </p>
 

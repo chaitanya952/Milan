@@ -173,8 +173,7 @@ export default function DJNight() {
                 {[
                   'Live performance by Band Aarohi',
                   'State-of-the-art sound & lighting',
-                  'Food trucks & beverages',
-                  'VIP lounge access available',
+                  'Attractive Stalls & beverages',
                 ].map((feature, i) => (
                   <motion.div
                     key={i}
@@ -321,46 +320,24 @@ export default function DJNight() {
 
             <div className="space-y-4 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
               <div className="glass rounded-xl p-4 border border-white/10">
-                <p className="text-sm text-gray-400 mb-1">Chrysalis Overall Coordinator</p>
-                <p className="text-lg font-bold text-white">Annika</p>
+                <p className="text-sm text-gray-400 mb-1">DJ Night Coordinator</p>
+                <p className="text-lg font-bold text-white">Vamshi</p>
                 <a
-                  href="tel:9618682968"
+                  href="tel:8498897746"
                   className="text-neon-pink hover:underline flex items-center gap-2 mt-2"
                 >
-                  📱 9618682968
+                  📱 8498897746
                 </a>
               </div>
 
               <div className="glass rounded-xl p-4 border border-white/10">
-                <p className="text-sm text-gray-400 mb-1">Chrysalis Overall Coordinator</p>
-                <p className="text-lg font-bold text-white">Charan</p>
+                <p className="text-sm text-gray-400 mb-1">DJ Night Coordinator</p>
+                <p className="text-lg font-bold text-white">Sumanth</p>
                 <a
-                  href="tel:9949162851"
+                  href="tel:7893220413"
                   className="text-neon-pink hover:underline flex items-center gap-2 mt-2"
                 >
-                  📱 99491 62851
-                </a>
-              </div>
-
-              <div className="glass rounded-xl p-4 border border-white/10">
-                <p className="text-sm text-gray-400 mb-1">Chrysalis Overall Coordinator</p>
-                <p className="text-lg font-bold text-white">Harshita</p>
-                <a
-                  href="tel:8712143102"
-                  className="text-neon-pink hover:underline flex items-center gap-2 mt-2"
-                >
-                  📱 87121 43102
-                </a>
-              </div>
-
-              <div className="glass rounded-xl p-4 border border-white/10">
-                <p className="text-sm text-gray-400 mb-1">Ignitron Coordinator</p>
-                <p className="text-lg font-bold text-white">Praneeth</p>
-                <a
-                  href="tel:7396951050"
-                  className="text-neon-blue hover:underline flex items-center gap-2 mt-2"
-                >
-                  📱 7396951050
+                  📱 7893220413
                 </a>
               </div>
 

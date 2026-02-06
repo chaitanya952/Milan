@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
 import { SubEvent } from '@/lib/eventsData';
 import RegistrationForm from './RegistrationForm';
-import { Calendar, Clock, MapPin, Users, Trophy, DollarSign, FileText, Phone } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users, Trophy, FileText, Phone } from 'lucide-react';
 
 interface SubEventDetailProps {
   subEvent: SubEvent;
@@ -26,7 +26,9 @@ export default function SubEventDetail({
   const isGroupEvent = subEvent.teamSize === 'group';
   const isSoloEvent = subEvent.teamSize === 'solo';
   const isFlexibleEvent = subEvent.teamSize === 'solo/duo/group';
-  const entryFee = isGroupEvent || isFlexibleEvent ? subEvent.entryFee.group : subEvent.entryFee.single;
+  
+  const showBothFees = isFlexibleEvent && subEvent.entryFee.single > 0 && subEvent.entryFee.group > 0;
+  const entryFee = isGroupEvent ? subEvent.entryFee.group : subEvent.entryFee.single;
 
   // Category icon mapping
   const getCategoryIcon = (category: string) => {
@@ -39,8 +41,6 @@ export default function SubEventDetail({
         return '🎮';
       case 'Sports':
         return '⚽';
-      default:
-        return '🎭';
     }
   };
 
@@ -77,8 +77,8 @@ export default function SubEventDetail({
               </span>
               <div className="flex-1">
                 <div className="flex items-center gap-3 flex-wrap mb-2">
-                  <h2 className="text-3xl md:text-4xl font-black">
-                    <span className={`text-${eventColor} glow-text`}>{subEvent.name}</span>
+                  <h2 className={`text-3xl md:text-4xl font-black text-${eventColor}`}>
+                    {subEvent.name}
                   </h2>
                   <span className={`text-xs font-bold px-3 py-1 rounded-full bg-${eventColor}/20 text-${eventColor} border border-${eventColor}/50`}>
                     {subEvent.category}
@@ -94,10 +94,20 @@ export default function SubEventDetail({
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
             {/* Entry Fee Card */}
             <div className="glass rounded-xl p-4 text-center border-2 border-white/10 hover:border-white/20 transition-all">
-              <DollarSign className={`w-6 h-6 mx-auto mb-2 text-${eventColor}`} />
-              <div className={`text-2xl font-bold text-${eventColor}`}>
-                ₹{entryFee}
-                {isFlexibleEvent && '/person'}
+              <div className={`text-xl font-bold text-${eventColor} flex flex-col gap-1`}>
+                {showBothFees ? (
+                  <>
+                    <div className="text-sm">Solo: ₹{subEvent.entryFee.single}</div>
+                    <div className="text-sm">Group: ₹{subEvent.entryFee.group}</div>
+                  </>
+                ) : isFlexibleEvent ? (
+                  <>
+                    ₹{subEvent.entryFee.single > 0 ? subEvent.entryFee.single : subEvent.entryFee.group}
+                    <span className="text-xs ml-1">/head</span>
+                  </>
+                ) : (
+                  <>₹{entryFee}</>
+                )}
               </div>
               <div className="text-xs text-gray-400 mt-1">Entry Fee</div>
             </div>
@@ -208,7 +218,7 @@ export default function SubEventDetail({
                   className="flex items-center gap-3 p-3 glass rounded-xl border border-white/10 hover:border-white/20 transition-all group"
                 >
                   <div
-                    className={`w-12 h-12 rounded-full bg-gradient-to-br from-${eventColor} to-neon-purple flex items-center justify-center font-bold text-white text-xl group-hover:scale-110 transition-transform`}
+                    className={`w-12 h-12 rounded-full bg-${eventColor}/80 flex items-center justify-center font-bold text-white text-xl group-hover:scale-110 transition-transform`}
                   >
                     {coord.name.charAt(0)}
                   </div>
@@ -259,7 +269,7 @@ export default function SubEventDetail({
             )}
             <motion.button
               onClick={() => setShowRegistration(true)}
-              className={`flex-1 py-4 bg-gradient-to-r from-${eventColor} to-neon-purple rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all`}
+              className={`flex-1 py-4 bg-${eventColor} rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition-all text-white`}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
