@@ -525,7 +525,7 @@ export const eventsData: MainEvent[] = [
         maxTeamSize: 2,
         entryFee: {
           single: 0,
-          group: 500
+          group: 400
         },
         prizes: '₹3,000',
         rules: [

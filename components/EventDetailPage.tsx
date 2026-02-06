@@ -210,7 +210,7 @@ function EventCard({
         {/* Event Name with Icon */}
         <div className="flex items-center gap-3 mb-3">
           <span className="text-2xl">
-            {isGroupEvent ? '👥' : isSoloDuoGroup ? '👤👥' : '👤'}
+            {isGroupEvent ? '👥' : isFlexibleEvent ? '👤👥' : '👤'}
           </span>
           <h3 className="text-2xl font-bold group-hover:glow-text transition-all relative z-10">
             {subEvent.name}
