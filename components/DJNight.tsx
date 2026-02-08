@@ -2,6 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { useInView } from 'framer-motion';
+import Image from 'next/image';
 import { useRef, useState } from 'react';
 
 export default function DJNight() {
@@ -218,72 +219,56 @@ export default function DJNight() {
               transition={{ duration: 0.8 }}
               className="relative"
             >
-              {/* Audio Visualizer Effect */}
-              <div className="relative aspect-square max-w-md mx-auto">
-                {/* Center Circle */}
+              <div className="relative max-w-lg mx-auto">
                 <motion.div
-                  className="absolute inset-0 flex items-center justify-center"
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+                  className="absolute -inset-10 rounded-full bg-gradient-to-tr from-neon-pink/20 via-neon-blue/10 to-neon-purple/20 blur-3xl"
+                  animate={{ scale: [1, 1.08, 1], opacity: [0.35, 0.6, 0.35] }}
+                  transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }}
+                />
+
+                <motion.div
+                  className="relative rounded-3xl overflow-hidden border border-white/10 shadow-2xl"
+                  initial={{ y: 20, opacity: 0 }}
+                  animate={isInView ? { y: 0, opacity: 1 } : { y: 20, opacity: 0 }}
+                  transition={{ delay: 0.2, duration: 0.6 }}
                 >
-                  <div className="w-32 h-32 rounded-full bg-gradient-to-br from-neon-pink to-neon-blue neon-glow" />
+                  <div className="relative aspect-[3/2] w-full">
+                    <Image
+                      src="/images/BandAarohi.jpeg"
+                      alt="Band Aarohi group photo"
+                      fill
+                      className="object-cover object-center"
+                      sizes="(min-width: 1024px) 28rem, (min-width: 768px) 60vw, 90vw"
+                      priority
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-tr from-fest-darker/80 via-transparent to-neon-pink/20" />
+                  </div>
                 </motion.div>
 
-                {/* Equalizer Bars */}
-                {[...Array(12)].map((_, i) => {
-                  const angle = (i * 360) / 12;
-                  return (
-                    <motion.div
-                      key={i}
-                      className="absolute left-1/2 top-1/2 origin-bottom"
-                      style={{
-                        transform: `rotate(${angle}deg) translateY(-50%)`,
-                        height: '150px',
-                        width: '6px',
-                      }}
-                    >
-                      <motion.div
-                        className={`w-full rounded-full bg-gradient-to-t ${
-                          i % 3 === 0
-                            ? 'from-neon-pink to-transparent'
-                            : i % 3 === 1
-                            ? 'from-neon-blue to-transparent'
-                            : 'from-neon-purple to-transparent'
-                        }`}
-                        animate={{
-                          height: ['40%', '100%', '40%'],
-                          opacity: [0.5, 1, 0.5],
-                        }}
-                        transition={{
-                          duration: 0.8 + Math.random() * 0.4,
-                          repeat: Infinity,
-                          ease: 'easeInOut',
-                          delay: i * 0.1,
-                        }}
-                      />
-                    </motion.div>
-                  );
-                })}
-
-                {/* Outer Rings */}
-                {[1, 2, 3].map((ring) => (
-                  <motion.div
-                    key={ring}
-                    className="absolute inset-0 rounded-full border-2 border-neon-blue/30"
-                    style={{
-                      padding: `${ring * 20}px`,
-                    }}
-                    animate={{
-                      scale: [1, 1.1, 1],
-                      opacity: [0.3, 0.6, 0.3],
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      delay: ring * 0.2,
-                    }}
+                <motion.div
+                  className="absolute -top-12 -right-6 sm:-top-14 sm:-right-8 w-28 h-28 sm:w-36 sm:h-36 glass rounded-full p-3 border-2 border-neon-yellow/60 neon-border"
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={isInView ? { scale: 1, opacity: 1 } : { scale: 0.8, opacity: 0 }}
+                  transition={{ delay: 0.4, duration: 0.5 }}
+                  style={{ backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }}
+                >
+                  <Image
+                    src="/images/yellow.png"
+                    alt="Aarohi logo"
+                    width={300}
+                    height={300}
+                    className="object-contain w-full h-full"
+                    priority
                   />
-                ))}
+                </motion.div>
+
+                <div className="mt-6 glass rounded-2xl p-4 border border-white/10 text-center">
+                  <p className="text-xs uppercase tracking-[0.35em] text-gray-400">
+                    Live Band
+                  </p>
+                  <p className="text-2xl font-bold text-white">Band Aarohi</p>
+                  <p className="text-sm text-gray-400">Signature showcase for DJ Night</p>
+                </div>
               </div>
             </motion.div>
           </div>

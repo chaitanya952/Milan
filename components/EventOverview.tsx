@@ -5,6 +5,19 @@ import { useState } from 'react';
 import { eventsData } from '@/lib/eventsData';
 import EventDetailPage from './EventDetailPage';
 import { AnimatePresence } from 'framer-motion';
+import { Rocket, Sparkles, Trophy } from 'lucide-react';
+import * as LucideIcons from 'lucide-react';
+
+const DynamicIcon = ({ name, size = 72, className = "", strokeWidth = 2 }: { 
+  name: string, 
+  size?: number, 
+  className?: string,
+  strokeWidth?: number 
+}) => {
+  const IconComponent = (LucideIcons as any)[name];
+  if (!IconComponent) return <Trophy size={size} className={className} strokeWidth={strokeWidth} />;
+  return <IconComponent size={size} className={className} strokeWidth={strokeWidth} />;
+};
 
 export default function EventOverview() {
   const [selectedEvent, setSelectedEvent] = useState<string | null>(null);
@@ -47,9 +60,23 @@ export default function EventOverview() {
               Three Epic Journeys
             </h2>
 
-            <p className="text-xl text-gray-400 max-w-3xl mx-auto">
-              Choose your path: Entrepreneurship, Sports Excellence, or Cultural Brilliance
-            </p>
+            <div className="text-xl text-gray-400 max-w-3xl mx-auto">
+              <p>Choose your path</p>
+              <div className="mt-4 flex flex-wrap items-center justify-center gap-3 text-sm sm:text-base">
+                <span className="glass px-4 py-2 rounded-full border border-neon-orange/40 text-neon-orange font-semibold flex items-center gap-2">
+                  <Rocket className="w-4 h-4" />
+                  Entrepreneurship
+                </span>
+                <span className="glass px-4 py-2 rounded-full border border-neon-pink/40 text-neon-pink font-semibold flex items-center gap-2">
+                  <Trophy className="w-4 h-4" />
+                  Sports Excellence
+                </span>
+                <span className="glass px-4 py-2 rounded-full border border-neon-blue/40 text-neon-blue font-semibold flex items-center gap-2">
+                  <Sparkles className="w-4 h-4" />
+                  Cultural Brilliance
+                </span>
+              </div>
+            </div>
           </motion.div>
 
           {/* Event Cards Grid */}
@@ -70,11 +97,14 @@ export default function EventOverview() {
 
                   {/* Icon */}
                   <motion.div
-                    className="text-7xl mb-6 inline-block relative z-10"
+                    className="mb-6 inline-block relative z-10"
                     whileHover={{ rotate: 360, scale: 1.2 }}
                     transition={{ duration: 0.6 }}
                   >
-                    {event.icon}
+                    <DynamicIcon
+                      name={event.icon}
+                      className={`text-${event.color}`}
+                    />
                   </motion.div>
 
                   {/* Event Name */}

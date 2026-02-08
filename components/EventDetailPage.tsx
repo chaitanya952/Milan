@@ -58,11 +58,16 @@ export default function EventDetailPage({ eventId, onClose }: EventDetailPagePro
               className="text-center mb-12"
             >
               <motion.div
-                className="inline-block text-8xl mb-6"
+                className="inline-flex items-center justify-center mb-6"
                 animate={{ rotate: [0, 10, -10, 0] }}
                 transition={{ duration: 2, repeat: Infinity }}
               >
-                {event.icon}
+                <DynamicIcon
+                  name={event.icon}
+                  size={96}
+                  strokeWidth={2}
+                  className={`text-${event.color}`}
+                />
               </motion.div>
 
               <h1 className="text-6xl sm:text-7xl md:text-8xl font-black mb-4">
